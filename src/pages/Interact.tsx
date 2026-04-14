@@ -22,6 +22,7 @@ interface Message {
   isAction?: boolean;
   imageUrl?: string;
   hiddenText?: string; // 隐藏的 OCR 文字内容，只发给 AI 不显示给用户
+  isImagePlaceholder?: boolean; // 标记是否为已被清理掉的图片消息
   recommendations?: ContentItem[];
 }
 
@@ -34,7 +35,18 @@ const INITIAL_MESSAGES: Message[] = [
 ];
 
 export default function Interact() {
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // 尝试从 localStorage 中恢复历史记录
+    const saved = localStorage.getItem("chat_history");
+    if (saved) {
+      try {
+        return JSON.parse(saved) as Message[];
+      } catch (e) {
+        console.error("Failed to parse chat history", e);
+      }
+    }
+    return INITIAL_MESSAGES;
+  });
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isOcrProcessing, setIsOcrProcessing] = useState(false);
@@ -54,6 +66,21 @@ export default function Interact() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  // 监听 messages 的变化并保存到 localStorage
+  useEffect(() => {
+    if (!isTyping && !isOcrProcessing) {
+      // 过滤掉包含 imageUrl 的图片属性，避免存储空间超出
+      const messagesToSave = messages.map(msg => {
+        if (msg.imageUrl || msg.hiddenText) {
+          const { imageUrl, ...rest } = msg;
+          return { ...rest, isImagePlaceholder: true }; // 标记该消息曾是一张图片
+        }
+        return msg;
+      });
+      localStorage.setItem("chat_history", JSON.stringify(messagesToSave));
+    }
+  }, [messages, isTyping, isOcrProcessing]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -280,6 +307,15 @@ export default function Interact() {
                       alt="Uploaded report" 
                       className="max-w-[200px] rounded-lg shadow-sm border border-white/20"
                     />
+                  </div>
+                )}
+                {/* 如果是清理过图片的记录，显示一个占位 */}
+                {msg.isImagePlaceholder && !msg.imageUrl && (
+                  <div className="mb-2 flex items-center justify-center bg-black/5 w-[200px] h-[100px] rounded-lg border border-[#e8e6dc]/60 shadow-sm">
+                    <span className="text-[#b0aea5] text-[13px] font-serif flex items-center gap-1.5">
+                      <Camera size={14} aria-hidden="true" />
+                      已过期的图片
+                    </span>
                   </div>
                 )}
                 {msg.content && (
