@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Camera, Sparkles, ChevronRight, Bot, User } from "lucide-react";
+import { Send, Camera, Sparkles, ChevronRight, Bot, User, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/components/Layout";
+import { createWorker } from 'tesseract.js';
 
 const QUICK_QUESTIONS = [
   "高血压能吃柚子吗？",
@@ -31,13 +32,53 @@ export default function Interact() {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isOcrProcessing, setIsOcrProcessing] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsOcrProcessing(true);
+    try {
+      const worker = await createWorker(['chi_sim', 'eng']);
+      const ret = await worker.recognize(file);
+      let text = ret.data.text;
+      
+      // 数据清理：去除大量空行
+      text = text.replace(/\n\s*\n/g, '\n').trim();
+      
+      if (text) {
+        handleSend(`请帮我解读这份检查报告：\n${text}`);
+      } else {
+        setMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          sender: "ai",
+          content: "抱歉，我未能从图片中识别出文字，请尝试重新拍摄或上传更清晰的图片。"
+        }]);
+      }
+      await worker.terminate();
+    } catch (error) {
+      console.error("OCR Error:", error);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        sender: "ai",
+        content: "抱歉，图片识别过程中发生了错误，请稍后再试。"
+      }]);
+    } finally {
+      setIsOcrProcessing(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
@@ -67,7 +108,7 @@ export default function Interact() {
           messages: [
             { 
               role: "system", 
-              content: "你是一个专业的医疗健康助手。请用专业、温暖的口吻回答用户的健康问题。可以使用Markdown格式来结构化你的回答（如加粗、列表、表格等）。回答尽量简明扼要，如果是复杂症状，务必建议就医。" 
+              content: "你是一个专业的医疗健康助手。请用专业、温暖的口吻回答用户的健康问题。如果用户发送了体检或医学检查报告的内容，请提取关键指标，进行重点解读并给出结构化的回复。可以使用Markdown格式来结构化你的回答（如加粗、列表、表格等）。回答尽量简明扼要，如果是复杂症状，务必建议就医。" 
             },
             ...history,
             { role: "user", content: text }
@@ -248,27 +289,44 @@ export default function Interact() {
       {/* Input Area */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#faf9f5]/80 backdrop-blur-xl border-t border-[#e8e6dc]/60 p-3 pb-safe z-20">
         <div className="flex items-center gap-3 max-w-[480px] mx-auto px-2">
-          <button type="button" aria-label="拍照或上传图片" className="p-2.5 text-[#b0aea5] hover:text-[#6a9bcc] transition-colors shrink-0 bg-white border border-[#e8e6dc] shadow-sm hover:border-[#6a9bcc]/30 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]">
-            <Camera size={22} aria-hidden="true" />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+          <button 
+            type="button" 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isOcrProcessing || isTyping}
+            aria-label="拍照或上传图片" 
+            className={cn(
+              "p-2.5 text-[#b0aea5] hover:text-[#6a9bcc] transition-colors shrink-0 bg-white border border-[#e8e6dc] shadow-sm hover:border-[#6a9bcc]/30 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]",
+              (isOcrProcessing || isTyping) && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            {isOcrProcessing ? <Loader2 size={22} className="animate-spin" /> : <Camera size={22} aria-hidden="true" />}
           </button>
           <div className="flex-1 bg-white rounded-full flex items-center px-4 py-1.5 border border-[#e8e6dc] shadow-sm focus-within:border-[#6a9bcc] focus-within:ring-2 focus-within:ring-[#6a9bcc]/20 transition-all">
             <input
               type="text"
               value={input}
+              disabled={isOcrProcessing}
               aria-label="输入健康问题或上传报告"
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
-              placeholder="输入健康问题或上传报告…"
-              className="flex-1 bg-transparent border-none outline-none py-2 text-[15px] placeholder:text-[#b0aea5] text-[#141413] font-serif"
+              placeholder={isOcrProcessing ? "正在识别图片中的文字..." : "输入健康问题或上传报告…"}
+              className="flex-1 bg-transparent border-none outline-none py-2 text-[15px] placeholder:text-[#b0aea5] text-[#141413] font-serif disabled:opacity-50"
             />
             <button 
               type="button"
               aria-label="发送消息"
               onClick={() => handleSend(input)}
-              disabled={!input.trim()}
+              disabled={!input.trim() || isOcrProcessing}
               className={cn(
                 "p-2 rounded-full transition-all shrink-0 ml-1 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6a9bcc]",
-                input.trim() ? "bg-[#6a9bcc] text-white shadow-md hover:bg-[#5b8cbf]" : "bg-[#e8e6dc] text-[#b0aea5]"
+                input.trim() && !isOcrProcessing ? "bg-[#6a9bcc] text-white shadow-md hover:bg-[#5b8cbf]" : "bg-[#e8e6dc] text-[#b0aea5]"
               )}
             >
               <Send size={16} className={cn(input.trim() && "ml-0.5")} aria-hidden="true" />
