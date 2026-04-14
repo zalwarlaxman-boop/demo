@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Camera, Sparkles, ChevronRight, Bot, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { cn } from "@/components/Layout";
 
 const QUICK_QUESTIONS = [
@@ -41,7 +43,9 @@ export default function Interact() {
     if (!text.trim()) return;
     
     const newUserMsg: Message = { id: Date.now().toString(), sender: "user", content: text };
-    setMessages(prev => [...prev, newUserMsg]);
+    const aiMessageId = (Date.now() + 1).toString();
+    
+    setMessages(prev => [...prev, newUserMsg, { id: aiMessageId, sender: "ai", content: "", isAction: false }]);
     setInput("");
     setIsTyping(true);
 
@@ -63,12 +67,13 @@ export default function Interact() {
           messages: [
             { 
               role: "system", 
-              content: "你是一个专业的医疗健康助手。请用专业、温暖的口吻回答用户的健康问题。回答尽量简明扼要，如果是复杂症状，务必建议就医。" 
+              content: "你是一个专业的医疗健康助手。请用专业、温暖的口吻回答用户的健康问题。可以使用Markdown格式来结构化你的回答（如加粗、列表、表格等）。回答尽量简明扼要，如果是复杂症状，务必建议就医。" 
             },
             ...history,
             { role: "user", content: text }
           ],
-          temperature: 0.7
+          temperature: 0.7,
+          stream: true
         })
       });
 
@@ -76,10 +81,47 @@ export default function Interact() {
         throw new Error("API request failed");
       }
 
-      const data = await response.json();
-      const aiContent = data.choices[0].message.content;
+      setIsTyping(false); // 收到响应后停止 typing 动画
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No reader available");
 
-      // 保留原有的交互卡片逻辑
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+      let aiContent = "";
+      let buffer = "";
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ""; // 保留不完整的一行
+          
+          for (const line of lines) {
+            if (line.trim() === '') continue;
+            if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6).trim();
+              if (dataStr === '[DONE]') continue;
+              
+              try {
+                const data = JSON.parse(dataStr);
+                const delta = data.choices[0]?.delta?.content || "";
+                aiContent += delta;
+                
+                // 实时更新当前 AI 的消息内容
+                setMessages(prev => prev.map(msg => 
+                  msg.id === aiMessageId ? { ...msg, content: aiContent } : msg
+                ));
+              } catch (e) {
+                console.error("JSON parse error for streamed chunk:", e, line);
+              }
+            }
+          }
+        }
+      }
+
+      // 流式接收完成后，判断是否需要附加动作
       let isAction = false;
       if (text.includes("套餐") || text.includes("推荐")) {
         isAction = true;
@@ -87,18 +129,18 @@ export default function Interact() {
         isAction = true;
       }
 
-      setMessages(prev => [
-        ...prev, 
-        { id: Date.now().toString(), sender: "ai", content: aiContent, isAction }
-      ]);
+      if (isAction) {
+        setMessages(prev => prev.map(msg => 
+          msg.id === aiMessageId ? { ...msg, isAction: true } : msg
+        ));
+      }
+
     } catch (error) {
       console.error("DeepSeek API Error:", error);
-      setMessages(prev => [
-        ...prev, 
-        { id: Date.now().toString(), sender: "ai", content: "抱歉，由于网络或服务原因，我暂时无法回答您的问题，请稍后再试。" }
-      ]);
-    } finally {
       setIsTyping(false);
+      setMessages(prev => prev.map(msg => 
+        msg.id === aiMessageId ? { ...msg, content: "抱歉，由于网络或服务原因，我暂时无法回答您的问题，请稍后再试。" } : msg
+      ));
     }
   };
 
@@ -161,7 +203,15 @@ export default function Interact() {
                     ? "bg-[#6a9bcc] text-white rounded-tr-sm" 
                     : "bg-white text-[#141413] rounded-tl-sm border border-[#e8e6dc]/60 font-serif"
                 )}>
-                  {msg.content}
+                  {msg.sender === "user" ? (
+                    msg.content
+                  ) : (
+                    <div className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-strong:text-[#141413] prose-a:text-[#6a9bcc]">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.content || "..."}
+                      </ReactMarkdown>
+                    </div>
+                  )}
                 </div>
                 
                 {msg.isAction && (
