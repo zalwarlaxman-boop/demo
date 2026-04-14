@@ -18,6 +18,8 @@ interface Message {
   sender: "user" | "ai";
   content: string;
   isAction?: boolean;
+  imageUrl?: string;
+  hiddenText?: string; // 隐藏的 OCR 文字内容，只发给 AI 不显示给用户
 }
 
 const INITIAL_MESSAGES: Message[] = [
@@ -46,7 +48,10 @@ export default function Interact() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // 创建本地图片的 URL 用于预览展示
+    const imageUrl = URL.createObjectURL(file);
     setIsOcrProcessing(true);
+
     try {
       const worker = await createWorker(['chi_sim', 'eng']);
       const ret = await worker.recognize(file);
@@ -56,13 +61,29 @@ export default function Interact() {
       text = text.replace(/\n\s*\n/g, '\n').trim();
       
       if (text) {
-        handleSend(`请帮我解读这份检查报告：\n${text}`);
+        // 创建一条包含图片和隐藏 OCR 文本的用户消息
+        const hiddenText = `请帮我解读这份检查报告：\n${text}`;
+        const newUserMsg: Message = { 
+          id: Date.now().toString(), 
+          sender: "user", 
+          content: "这是一份检查报告图片", // 显示一段简短说明，而不是全部 OCR 文字
+          imageUrl,
+          hiddenText
+        };
+        
+        const aiMessageId = (Date.now() + 1).toString();
+        setMessages(prev => [...prev, newUserMsg, { id: aiMessageId, sender: "ai", content: "", isAction: false }]);
+        setIsTyping(true);
+
+        // 复用后半段的 API 调用逻辑，提取成一个单独的函数发送请求
+        await fetchAIResponse(newUserMsg, aiMessageId);
       } else {
         setMessages(prev => [...prev, {
           id: Date.now().toString(),
           sender: "ai",
           content: "抱歉，我未能从图片中识别出文字，请尝试重新拍摄或上传更清晰的图片。"
         }]);
+        URL.revokeObjectURL(imageUrl); // 识别失败清理 URL
       }
       await worker.terminate();
     } catch (error) {
@@ -72,6 +93,7 @@ export default function Interact() {
         sender: "ai",
         content: "抱歉，图片识别过程中发生了错误，请稍后再试。"
       }]);
+      URL.revokeObjectURL(imageUrl); // 识别失败清理 URL
     } finally {
       setIsOcrProcessing(false);
       if (fileInputRef.current) {
@@ -80,21 +102,12 @@ export default function Interact() {
     }
   };
 
-  const handleSend = async (text: string) => {
-    if (!text.trim()) return;
-    
-    const newUserMsg: Message = { id: Date.now().toString(), sender: "user", content: text };
-    const aiMessageId = (Date.now() + 1).toString();
-    
-    setMessages(prev => [...prev, newUserMsg, { id: aiMessageId, sender: "ai", content: "", isAction: false }]);
-    setInput("");
-    setIsTyping(true);
-
+  const fetchAIResponse = async (newUserMsg: Message, aiMessageId: string) => {
     try {
-      // 构造历史对话记录，符合 OpenAI 兼容的 DeepSeek API 格式
+      // 构造历史对话记录，使用 content 或 hiddenText
       const history = messages.map(m => ({
         role: m.sender === "user" ? "user" : "assistant",
-        content: m.content
+        content: m.hiddenText || m.content
       }));
 
       const response = await fetch("https://api.deepseek.com/chat/completions", {
@@ -111,7 +124,7 @@ export default function Interact() {
               content: "你是一个专业的医疗健康助手。请用专业、温暖的口吻回答用户的健康问题。如果用户发送了体检或医学检查报告的内容，请提取关键指标，进行重点解读并给出结构化的回复。可以使用Markdown格式来结构化你的回答（如加粗、列表、表格等）。回答尽量简明扼要，如果是复杂症状，务必建议就医。" 
             },
             ...history,
-            { role: "user", content: text }
+            { role: "user", content: newUserMsg.hiddenText || newUserMsg.content }
           ],
           temperature: 0.7,
           stream: true
@@ -122,7 +135,7 @@ export default function Interact() {
         throw new Error("API request failed");
       }
 
-      setIsTyping(false); // 收到响应后停止 typing 动画
+      setIsTyping(false); 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No reader available");
 
@@ -137,7 +150,7 @@ export default function Interact() {
         if (value) {
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
-          buffer = lines.pop() || ""; // 保留不完整的一行
+          buffer = lines.pop() || "";
           
           for (const line of lines) {
             if (line.trim() === '') continue;
@@ -150,7 +163,6 @@ export default function Interact() {
                 const delta = data.choices[0]?.delta?.content || "";
                 aiContent += delta;
                 
-                // 实时更新当前 AI 的消息内容
                 setMessages(prev => prev.map(msg => 
                   msg.id === aiMessageId ? { ...msg, content: aiContent } : msg
                 ));
@@ -162,11 +174,11 @@ export default function Interact() {
         }
       }
 
-      // 流式接收完成后，判断是否需要附加动作
+      const contentToCheck = newUserMsg.hiddenText || newUserMsg.content;
       let isAction = false;
-      if (text.includes("套餐") || text.includes("推荐")) {
+      if (contentToCheck.includes("套餐") || contentToCheck.includes("推荐")) {
         isAction = true;
-      } else if (text.includes("报告") || text.includes("结节")) {
+      } else if (contentToCheck.includes("报告") || contentToCheck.includes("结节")) {
         isAction = true;
       }
 
@@ -183,6 +195,19 @@ export default function Interact() {
         msg.id === aiMessageId ? { ...msg, content: "抱歉，由于网络或服务原因，我暂时无法回答您的问题，请稍后再试。" } : msg
       ));
     }
+  };
+
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
+    
+    const newUserMsg: Message = { id: Date.now().toString(), sender: "user", content: text };
+    const aiMessageId = (Date.now() + 1).toString();
+    
+    setMessages(prev => [...prev, newUserMsg, { id: aiMessageId, sender: "ai", content: "", isAction: false }]);
+    setInput("");
+    setIsTyping(true);
+
+    await fetchAIResponse(newUserMsg, aiMessageId);
   };
 
   return (
@@ -238,22 +263,33 @@ export default function Interact() {
               </div>
               
               <div className="space-y-2">
-                <div className={cn(
-                  "p-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
-                  msg.sender === "user" 
-                    ? "bg-[#6a9bcc] text-white rounded-tr-sm" 
-                    : "bg-white text-[#141413] rounded-tl-sm border border-[#e8e6dc]/60 font-serif"
-                )}>
-                  {msg.sender === "user" ? (
-                    msg.content
-                  ) : (
-                    <div className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-strong:text-[#141413] prose-a:text-[#6a9bcc]">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {msg.content || "..."}
-                      </ReactMarkdown>
-                    </div>
-                  )}
-                </div>
+                {msg.imageUrl && (
+                  <div className="mb-2">
+                    <img 
+                      src={msg.imageUrl} 
+                      alt="Uploaded report" 
+                      className="max-w-[200px] rounded-lg shadow-sm border border-white/20"
+                    />
+                  </div>
+                )}
+                {msg.content && (
+                  <div className={cn(
+                    "p-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
+                    msg.sender === "user" 
+                      ? "bg-[#6a9bcc] text-white rounded-tr-sm" 
+                      : "bg-white text-[#141413] rounded-tl-sm border border-[#e8e6dc]/60 font-serif"
+                  )}>
+                    {msg.sender === "user" ? (
+                      msg.content
+                    ) : (
+                      <div className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-strong:text-[#141413] prose-a:text-[#6a9bcc]">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {msg.content || "..."}
+                        </ReactMarkdown>
+                      </div>
+                    )}
+                  </div>
+                )}
                 
                 {msg.isAction && (
                   <button type="button" className="bg-white border border-[#e8e6dc] shadow-sm rounded-[16px] p-3 flex items-center justify-between w-full hover:border-[#6a9bcc]/40 hover:bg-[#6a9bcc]/5 transition-colors group outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]">
