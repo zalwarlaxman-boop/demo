@@ -37,7 +37,7 @@ export default function Interact() {
     }
   }, [messages, isTyping]);
 
-  const handleSend = (text: string) => {
+  const handleSend = async (text: string) => {
     if (!text.trim()) return;
     
     const newUserMsg: Message = { id: Date.now().toString(), sender: "user", content: text };
@@ -45,24 +45,61 @@ export default function Interact() {
     setInput("");
     setIsTyping(true);
 
-    setTimeout(() => {
-      let aiContent = "这是一条来自通用模型/专属智能体的回复。";
+    try {
+      // 构造历史对话记录，符合 OpenAI 兼容的 DeepSeek API 格式
+      const history = messages.map(m => ({
+        role: m.sender === "user" ? "user" : "assistant",
+        content: m.content
+      }));
+
+      const response = await fetch("https://api.deepseek.com/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer sk-346750704ff54b678ce18b0091f2787f"
+        },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: [
+            { 
+              role: "system", 
+              content: "你是一个专业的医疗健康助手。请用专业、温暖的口吻回答用户的健康问题。回答尽量简明扼要，如果是复杂症状，务必建议就医。" 
+            },
+            ...history,
+            { role: "user", content: text }
+          ],
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+      const aiContent = data.choices[0].message.content;
+
+      // 保留原有的交互卡片逻辑
       let isAction = false;
-      
       if (text.includes("套餐") || text.includes("推荐")) {
-        aiContent = "为您匹配到适合的【深度护肝体检套餐】，点击这里了解详情或进行购买。";
         isAction = true;
       } else if (text.includes("报告") || text.includes("结节")) {
-        aiContent = "通过OCR和个人画像识别，建议您预约专科医生进行复查，点此进入【绿通招募】。";
         isAction = true;
       }
 
       setMessages(prev => [
         ...prev, 
-        { id: (Date.now() + 1).toString(), sender: "ai", content: aiContent, isAction }
+        { id: Date.now().toString(), sender: "ai", content: aiContent, isAction }
       ]);
+    } catch (error) {
+      console.error("DeepSeek API Error:", error);
+      setMessages(prev => [
+        ...prev, 
+        { id: Date.now().toString(), sender: "ai", content: "抱歉，由于网络或服务原因，我暂时无法回答您的问题，请稍后再试。" }
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (
