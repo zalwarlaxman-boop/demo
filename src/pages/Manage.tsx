@@ -9,7 +9,7 @@ export default function Manage() {
     <div className="flex flex-col h-full bg-[#faf9f5] overflow-y-auto">
       {/* Header Profile Area */}
       <div className="relative shrink-0 mb-6 z-10">
-        <div className="bg-[#6a9bcc] px-5 pt-12 pb-12 rounded-b-[40px] shadow-sm relative overflow-hidden">
+        <div className="bg-[#6a9bcc] px-5 pt-12 pb-16 rounded-b-[40px] shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           
           <div className="flex items-center justify-between relative z-10">
