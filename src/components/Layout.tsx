@@ -44,7 +44,7 @@ export default function Layout() {
                   isActive && "bg-blue-50/50 -translate-y-1 scale-110"
                 )}
               >
-                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} aria-hidden="true" />
               </div>
               <span
                 className={cn(

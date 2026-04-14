@@ -16,7 +16,7 @@ export default function Manage() {
             <div className="text-white">
               <h1 className="text-2xl font-bold tracking-tight">王先生</h1>
               <p className="text-blue-100 mt-1 flex items-center gap-1.5 text-sm">
-                <UserCheck size={14} /> 签约管理中
+                <UserCheck size={14} aria-hidden="true" /> 签约管理中
               </p>
             </div>
             
@@ -54,10 +54,11 @@ export default function Manage() {
         <div className="absolute -bottom-6 left-5 right-5 bg-white rounded-xl shadow-sm p-4 flex justify-between items-center z-20">
           <div>
             <p className="text-xs text-gray-500 font-medium">健康积分</p>
-            <p className="text-xl font-bold text-gray-900 mt-0.5">1,240 <span className="text-xs text-blue-600 font-medium">分</span></p>
+            <p className="text-xl font-bold text-gray-900 mt-0.5">{new Intl.NumberFormat('zh-CN').format(1240)} <span className="text-xs text-blue-600 font-medium">分</span></p>
           </div>
           <div className="w-[1px] h-10 bg-gray-100"></div>
           <button 
+            type="button"
             onClick={() => setCheckedIn(true)}
             disabled={checkedIn}
             className={`px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
@@ -66,7 +67,7 @@ export default function Manage() {
                 : 'bg-blue-50 text-blue-600 active:scale-95'
             }`}
           >
-            {checkedIn ? <CheckCircle2 size={16} /> : <Target size={16} />}
+            {checkedIn ? <CheckCircle2 size={16} aria-hidden="true" /> : <Target size={16} aria-hidden="true" />}
             {checkedIn ? '已打卡' : '每日打卡'}
           </button>
         </div>
@@ -83,7 +84,7 @@ export default function Manage() {
           <div className="space-y-3">
             <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex gap-3">
               <div className="mt-0.5 text-orange-500 bg-white rounded-full p-1.5 shadow-sm h-fit">
-                <BellRing size={16} />
+                <BellRing size={16} aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-orange-900">非医提醒：今晚降温</h3>
@@ -95,7 +96,7 @@ export default function Manage() {
             
             <div className="bg-white border border-gray-100 rounded-2xl p-4 flex gap-3 shadow-sm">
               <div className="mt-0.5 text-blue-500 bg-blue-50 rounded-full p-1.5 h-fit">
-                <CheckCircle2 size={16} />
+                <CheckCircle2 size={16} aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-gray-900">用药提醒：降压药</h3>
@@ -119,7 +120,7 @@ export default function Manage() {
               { title: "冬季适宜的5种室内有氧运动", time: "昨天" },
               { title: "了解你的体检指标：甘油三酯篇", time: "2天前" }
             ].map((news, idx) => (
-              <div key={idx} className="flex justify-between items-center group cursor-pointer">
+              <button type="button" key={idx} className="w-full flex justify-between items-center group cursor-pointer text-left">
                 <div className="flex items-center gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
                   <span className="text-[14px] text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-1">
@@ -127,7 +128,7 @@ export default function Manage() {
                   </span>
                 </div>
                 <span className="text-[11px] text-gray-400 shrink-0 ml-2">{news.time}</span>
-              </div>
+              </button>
             ))}
           </div>
         </section>

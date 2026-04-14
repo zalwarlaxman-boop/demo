@@ -113,7 +113,7 @@ export default function Interact() {
                 "w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm",
                 msg.sender === "user" ? "bg-blue-600 text-white" : "bg-white text-blue-600"
               )}>
-                {msg.sender === "user" ? <User size={16} /> : <Bot size={18} />}
+                {msg.sender === "user" ? <User size={16} aria-hidden="true" /> : <Bot size={18} aria-hidden="true" />}
               </div>
               
               <div className="space-y-2">
@@ -130,7 +130,7 @@ export default function Interact() {
                   <button className="bg-white border border-blue-100 shadow-sm rounded-xl p-3 flex items-center justify-between w-full hover:bg-blue-50/50 transition-colors group">
                     <span className="text-sm text-blue-600 font-medium">查看服务详情</span>
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                      <ChevronRight size={14} className="text-blue-600" />
+                      <ChevronRight size={14} className="text-blue-600" aria-hidden="true" />
                     </div>
                   </button>
                 )}
@@ -146,7 +146,7 @@ export default function Interact() {
             className="flex gap-3 max-w-[85%] mr-auto"
           >
             <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-sm shrink-0">
-              <Bot size={18} />
+              <Bot size={18} aria-hidden="true" />
             </div>
             <div className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm flex gap-1.5 items-center h-[46px]">
               <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
@@ -160,19 +160,21 @@ export default function Interact() {
       {/* Input Area */}
       <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 p-3 pb-safe">
         <div className="flex items-center gap-2 max-w-[480px] mx-auto">
-          <button className="p-2.5 text-gray-400 hover:text-blue-600 transition-colors shrink-0 bg-gray-100 hover:bg-blue-50 rounded-full">
-            <Camera size={22} />
+          <button aria-label="拍照或上传图片" className="p-2.5 text-gray-400 hover:text-blue-600 transition-colors shrink-0 bg-gray-100 hover:bg-blue-50 rounded-full">
+            <Camera size={22} aria-hidden="true" />
           </button>
           <div className="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-1.5 border border-transparent focus-within:bg-white focus-within:border-blue-200 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
             <input
               type="text"
               value={input}
+              aria-label="输入健康问题或上传报告"
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
               placeholder="输入健康问题或上传报告..."
               className="flex-1 bg-transparent border-none outline-none py-2 text-[15px] placeholder:text-gray-400"
             />
             <button 
+              aria-label="发送消息"
               onClick={() => handleSend(input)}
               disabled={!input.trim()}
               className={cn(
@@ -180,7 +182,7 @@ export default function Interact() {
                 input.trim() ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-400"
               )}
             >
-              <Send size={16} className={cn(input.trim() && "ml-0.5")} />
+              <Send size={16} className={cn(input.trim() && "ml-0.5")} aria-hidden="true" />
             </button>
           </div>
         </div>

@@ -113,11 +113,11 @@ export default function PopSci() {
                       <h3 className="font-semibold text-gray-900 leading-snug line-clamp-2">{item.title}</h3>
                       <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{item.summary}</p>
                       <div className="flex items-center gap-3 text-[11px] text-gray-400 pt-1">
-                        <span className="flex items-center gap-1"><Eye size={12} /> {item.views}</span>
-                        <span className="flex items-center gap-1"><ThumbsUp size={12} /> {item.likes}</span>
+                        <span className="flex items-center gap-1"><Eye size={12} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(parseInt(item.views.replace('w', '000').replace('k', '00')))}</span>
+                        <span className="flex items-center gap-1"><ThumbsUp size={12} aria-hidden="true" /> {item.likes}</span>
                       </div>
                     </div>
-                    <img src={item.image} alt={item.title} className="w-24 h-24 object-cover rounded-xl shrink-0" />
+                    <img src={item.image} alt="" width={96} height={96} className="w-24 h-24 object-cover rounded-xl shrink-0" />
                   </div>
                 </div>
               ))}
@@ -135,10 +135,10 @@ export default function PopSci() {
               {VIDEOS.map((item) => (
                 <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-[0.98] transition-transform">
                   <div className="relative">
-                    <img src={item.image} alt={item.title} className="w-full h-48 object-cover" />
+                    <img src={item.image} alt="" width={640} height={192} className="w-full h-48 object-cover" />
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                       <div className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center">
-                        <PlayCircle className="text-white" size={28} />
+                        <PlayCircle className="text-white" size={28} aria-hidden="true" />
                       </div>
                     </div>
                     <span className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
@@ -164,13 +164,13 @@ export default function PopSci() {
               {STORIES.map((item) => (
                 <div key={item.id} className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between active:scale-[0.98] transition-transform">
                   <div className="flex items-center gap-4">
-                    <img src={item.image} alt={item.title} className="w-16 h-16 object-cover rounded-full" />
+                    <img src={item.image} alt="" width={64} height={64} className="w-16 h-16 object-cover rounded-full" />
                     <div>
                       <h3 className="font-medium text-gray-900">{item.title}</h3>
                       <p className="text-sm text-gray-500 mt-1">讲述人：{item.author}</p>
                     </div>
                   </div>
-                  <ChevronRight className="text-gray-300" size={20} />
+                  <ChevronRight className="text-gray-300" size={20} aria-hidden="true" />
                 </div>
               ))}
             </motion.div>

@@ -48,20 +48,20 @@ export default function Service() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/4" />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
-                <Users size={20} className="text-blue-200" />
+                <Users size={20} className="text-blue-200" aria-hidden="true" />
                 <h2 className="text-lg font-bold">营养师专属服务</h2>
               </div>
               <p className="text-blue-100 text-sm mb-5 leading-relaxed">
                 加入专业营养师群，获取个性化饮食指导、日常食谱打卡与答疑。
               </p>
-              <button className="bg-white text-blue-600 px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors shadow-sm active:scale-95">
-                立即入群 <ArrowUpRight size={16} />
+              <button type="button" className="bg-white text-blue-600 px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors shadow-sm active:scale-95">
+                立即入群 <ArrowUpRight size={16} aria-hidden="true" />
               </button>
             </div>
             
             {/* Decoration */}
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full flex items-center justify-center">
-              <Users size={48} className="text-white/20" />
+              <Users size={48} className="text-white/20" aria-hidden="true" />
             </div>
           </div>
         </section>
@@ -73,13 +73,13 @@ export default function Service() {
             {services.map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={idx} className="bg-white rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer group border border-gray-100/50">
+                <button type="button" key={idx} className="w-full text-left bg-white rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer group border border-gray-100/50">
                   <div className={`${item.bg} w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                    <Icon size={20} className={item.color} />
+                    <Icon size={20} className={item.color} aria-hidden="true" />
                   </div>
                   <h3 className="font-bold text-gray-900 text-[15px]">{item.title}</h3>
                   <p className="text-[11px] text-gray-500 mt-1 leading-snug">{item.desc}</p>
-                </div>
+                </button>
               );
             })}
           </div>
