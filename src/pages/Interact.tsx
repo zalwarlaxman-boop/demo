@@ -3,8 +3,10 @@ import { Send, Camera, Sparkles, ChevronRight, Bot, User, Loader2 } from "lucide
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/components/Layout";
 import { createWorker } from 'tesseract.js';
+import { getRecommendations, type ContentItem, type ContentType } from "@/data/contentCatalog";
 
 const QUICK_QUESTIONS = [
   "高血压能吃柚子吗？",
@@ -20,6 +22,7 @@ interface Message {
   isAction?: boolean;
   imageUrl?: string;
   hiddenText?: string; // 隐藏的 OCR 文字内容，只发给 AI 不显示给用户
+  recommendations?: ContentItem[];
 }
 
 const INITIAL_MESSAGES: Message[] = [
@@ -35,8 +38,16 @@ export default function Interact() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isOcrProcessing, setIsOcrProcessing] = useState(false);
+  const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const deepseekApiKey = import.meta.env.VITE_DEEPSEEK_API_KEY as string | undefined;
+  const typeLabel: Record<ContentType, string> = {
+    article: "文章",
+    video: "视频",
+    service: "服务",
+    product: "商品",
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -110,11 +121,14 @@ export default function Interact() {
         content: m.hiddenText || m.content
       }));
 
+      if (!deepseekApiKey) {
+        throw new Error("Missing DeepSeek API key");
+      }
       const response = await fetch("https://api.deepseek.com/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer sk-346750704ff54b678ce18b0091f2787f"
+          "Authorization": `Bearer ${deepseekApiKey}`
         },
         body: JSON.stringify({
           model: "deepseek-chat",
@@ -174,25 +188,21 @@ export default function Interact() {
         }
       }
 
-      const contentToCheck = newUserMsg.hiddenText || newUserMsg.content;
-      let isAction = false;
-      if (contentToCheck.includes("套餐") || contentToCheck.includes("推荐")) {
-        isAction = true;
-      } else if (contentToCheck.includes("报告") || contentToCheck.includes("结节")) {
-        isAction = true;
-      }
-
-      if (isAction) {
-        setMessages(prev => prev.map(msg => 
-          msg.id === aiMessageId ? { ...msg, isAction: true } : msg
-        ));
-      }
+      const query = newUserMsg.hiddenText || newUserMsg.content;
+      const recommendations = getRecommendations(query, 2);
+      setMessages(prev => prev.map(msg =>
+        msg.id === aiMessageId ? { ...msg, recommendations } : msg
+      ));
 
     } catch (error) {
       console.error("DeepSeek API Error:", error);
       setIsTyping(false);
-      setMessages(prev => prev.map(msg => 
-        msg.id === aiMessageId ? { ...msg, content: "抱歉，由于网络或服务原因，我暂时无法回答您的问题，请稍后再试。" } : msg
+      const query = newUserMsg.hiddenText || newUserMsg.content;
+      const recommendations = getRecommendations(query, 2);
+      setMessages(prev => prev.map(msg =>
+        msg.id === aiMessageId
+          ? { ...msg, content: "抱歉，由于网络或服务原因，我暂时无法回答您的问题，请稍后再试。", recommendations }
+          : msg
       ));
     }
   };
@@ -291,14 +301,30 @@ export default function Interact() {
                   </div>
                 )}
                 
-                {msg.isAction && (
-                  <button type="button" className="bg-white border border-[#e8e6dc] shadow-sm rounded-[16px] p-3 flex items-center justify-between w-full hover:border-[#6a9bcc]/40 hover:bg-[#6a9bcc]/5 transition-colors group outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]">
-                    <span className="text-[14px] text-[#6a9bcc] font-medium ml-1">查看服务详情</span>
-                    <div className="w-7 h-7 rounded-full bg-[#6a9bcc]/10 flex items-center justify-center group-hover:bg-[#6a9bcc]/20 transition-colors">
-                      <ChevronRight size={16} className="text-[#6a9bcc]" aria-hidden="true" />
-                    </div>
-                  </button>
-                )}
+                {msg.sender === "ai" && msg.recommendations?.length ? (
+                  <div className="space-y-2">
+                    {msg.recommendations.slice(0, 2).map((rec) => (
+                      <button
+                        key={rec.id}
+                        type="button"
+                        onClick={() => navigate(`/content/${rec.id}`)}
+                        className="bg-white border border-[#e8e6dc] shadow-sm rounded-[16px] p-3 flex items-center justify-between w-full hover:border-[#6a9bcc]/40 hover:bg-[#6a9bcc]/5 transition-colors group outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-[12px] text-[#6a9bcc] bg-[#6a9bcc]/10 px-2 py-1 rounded-full font-medium shrink-0">
+                            {typeLabel[rec.type]}
+                          </span>
+                          <span className="text-[14px] text-[#141413] font-medium line-clamp-1 font-serif">
+                            {rec.title}
+                          </span>
+                        </div>
+                        <div className="w-7 h-7 rounded-full bg-[#6a9bcc]/10 flex items-center justify-center group-hover:bg-[#6a9bcc]/20 transition-colors shrink-0">
+                          <ChevronRight size={16} className="text-[#6a9bcc]" aria-hidden="true" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </motion.div>
           ))}
