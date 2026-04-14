@@ -4,6 +4,7 @@ import PopSci from "./pages/PopSci";
 import Interact from "./pages/Interact";
 import Manage from "./pages/Manage";
 import Service from "./pages/Service";
+import Me from "./pages/Me";
 import ContentDetail from "./pages/ContentDetail";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="interact" element={<Interact />} />
           <Route path="manage" element={<Manage />} />
           <Route path="service" element={<Service />} />
+          <Route path="me" element={<Me />} />
           <Route path="content/:id" element={<ContentDetail />} />
         </Route>
       </Routes>
