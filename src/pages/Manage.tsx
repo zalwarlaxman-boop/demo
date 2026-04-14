@@ -8,42 +8,44 @@ export default function Manage() {
   return (
     <div className="flex flex-col h-full bg-gray-50 overflow-y-auto">
       {/* Header Profile Area */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-800 px-5 pt-12 pb-8 rounded-b-[2.5rem] shadow-lg shrink-0 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        
-        <div className="flex items-center justify-between relative z-10">
-          <div className="text-white">
-            <h1 className="text-2xl font-bold tracking-tight">王先生</h1>
-            <p className="text-blue-100 mt-1 flex items-center gap-1.5 text-sm">
-              <UserCheck size={14} /> 签约管理中
-            </p>
-          </div>
+      <div className="relative shrink-0 mb-6">
+        <div className="bg-gradient-to-br from-blue-600 to-blue-800 px-5 pt-12 pb-12 rounded-b-[2.5rem] shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           
-          {/* Circular Progress */}
-          <div className="relative w-16 h-16 flex items-center justify-center">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-              <path
-                className="text-blue-400/30"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              />
-              <motion.path
-                initial={{ strokeDasharray: "0, 100" }}
-                animate={{ strokeDasharray: "85, 100" }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="text-white"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-              <span className="text-[10px] font-medium opacity-80">画像</span>
-              <span className="text-xs font-bold -mt-1">85%</span>
+          <div className="flex items-center justify-between relative z-10">
+            <div className="text-white">
+              <h1 className="text-2xl font-bold tracking-tight">王先生</h1>
+              <p className="text-blue-100 mt-1 flex items-center gap-1.5 text-sm">
+                <UserCheck size={14} /> 签约管理中
+              </p>
+            </div>
+            
+            {/* Circular Progress */}
+            <div className="relative w-16 h-16 flex items-center justify-center">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <path
+                  className="text-blue-400/30"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                />
+                <motion.path
+                  initial={{ strokeDasharray: "0, 100" }}
+                  animate={{ strokeDasharray: "85, 100" }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="text-white"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                <span className="text-[10px] font-medium opacity-80">画像</span>
+                <span className="text-xs font-bold -mt-1">85%</span>
+              </div>
             </div>
           </div>
         </div>
@@ -70,7 +72,7 @@ export default function Manage() {
         </div>
       </div>
 
-      <div className="px-5 pt-12 pb-6 space-y-6 flex-1">
+      <div className="px-5 pt-4 pb-6 space-y-6 flex-1">
         
         {/* Reminders */}
         <section>
