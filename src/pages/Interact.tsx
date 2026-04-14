@@ -66,29 +66,30 @@ export default function Interact() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#faf9f5]">
       {/* Header */}
-      <header className="pt-8 pb-4 px-5 bg-white shrink-0 shadow-sm z-10">
+      <header className="pt-10 pb-4 px-5 bg-[#faf9f5] shrink-0 border-b border-[#e8e6dc]/60 z-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">医心医意</h1>
-            <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
-              <Sparkles size={14} className="text-blue-500" />
+            <h1 className="text-[28px] font-semibold text-[#141413] tracking-tight font-heading">医心医意</h1>
+            <p className="text-[13px] text-[#b0aea5] mt-1 flex items-center gap-1.5 font-serif">
+              <Sparkles size={14} className="text-[#6a9bcc]" aria-hidden="true" />
               MEDTALENT AI 提供支持
             </p>
           </div>
-          <div className="bg-blue-50 text-blue-600 text-xs px-3 py-1.5 rounded-full font-medium border border-blue-100">
+          <div className="bg-[#6a9bcc]/10 text-[#6a9bcc] text-[12px] px-3 py-1.5 rounded-full font-medium">
             个人模型
           </div>
         </div>
 
         {/* Quick Questions (通用百问) */}
-        <div className="flex overflow-x-auto gap-2 mt-5 pb-1 hide-scrollbar">
+        <div className="flex overflow-x-auto gap-2 mt-6 pb-1 hide-scrollbar">
           {QUICK_QUESTIONS.map((q, idx) => (
             <button
               key={idx}
+              type="button"
               onClick={() => handleSend(q)}
-              className="whitespace-nowrap bg-gray-100 text-gray-600 text-[13px] px-4 py-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              className="whitespace-nowrap bg-white border border-[#e8e6dc] text-[#141413] text-[14px] px-4 py-2 rounded-full hover:bg-[#6a9bcc]/5 hover:border-[#6a9bcc]/30 hover:text-[#6a9bcc] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] shadow-sm"
             >
               {q}
             </button>
@@ -97,7 +98,7 @@ export default function Interact() {
       </header>
 
       {/* Chat Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-6 pb-24 scroll-smooth">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-6 space-y-6 pb-24 scroll-smooth">
         <AnimatePresence>
           {messages.map((msg) => (
             <motion.div
@@ -110,27 +111,27 @@ export default function Interact() {
               )}
             >
               <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm",
-                msg.sender === "user" ? "bg-blue-600 text-white" : "bg-white text-blue-600"
+                "w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm border",
+                msg.sender === "user" ? "bg-[#6a9bcc] text-white border-transparent" : "bg-white text-[#6a9bcc] border-[#e8e6dc]/60"
               )}>
                 {msg.sender === "user" ? <User size={16} aria-hidden="true" /> : <Bot size={18} aria-hidden="true" />}
               </div>
               
               <div className="space-y-2">
                 <div className={cn(
-                  "p-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm",
+                  "p-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
                   msg.sender === "user" 
-                    ? "bg-blue-600 text-white rounded-tr-sm" 
-                    : "bg-white text-gray-800 rounded-tl-sm"
+                    ? "bg-[#6a9bcc] text-white rounded-tr-sm" 
+                    : "bg-white text-[#141413] rounded-tl-sm border border-[#e8e6dc]/60 font-serif"
                 )}>
                   {msg.content}
                 </div>
                 
                 {msg.isAction && (
-                  <button className="bg-white border border-blue-100 shadow-sm rounded-xl p-3 flex items-center justify-between w-full hover:bg-blue-50/50 transition-colors group">
-                    <span className="text-sm text-blue-600 font-medium">查看服务详情</span>
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                      <ChevronRight size={14} className="text-blue-600" aria-hidden="true" />
+                  <button type="button" className="bg-white border border-[#e8e6dc] shadow-sm rounded-[16px] p-3 flex items-center justify-between w-full hover:border-[#6a9bcc]/40 hover:bg-[#6a9bcc]/5 transition-colors group outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]">
+                    <span className="text-[14px] text-[#6a9bcc] font-medium ml-1">查看服务详情</span>
+                    <div className="w-7 h-7 rounded-full bg-[#6a9bcc]/10 flex items-center justify-center group-hover:bg-[#6a9bcc]/20 transition-colors">
+                      <ChevronRight size={16} className="text-[#6a9bcc]" aria-hidden="true" />
                     </div>
                   </button>
                 )}
@@ -145,41 +146,42 @@ export default function Interact() {
             animate={{ opacity: 1 }}
             className="flex gap-3 max-w-[85%] mr-auto"
           >
-            <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-sm shrink-0">
+            <div className="w-8 h-8 rounded-full bg-white border border-[#e8e6dc]/60 text-[#6a9bcc] flex items-center justify-center shadow-sm shrink-0">
               <Bot size={18} aria-hidden="true" />
             </div>
-            <div className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm flex gap-1.5 items-center h-[46px]">
-              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
-              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
-              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+            <div className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm border border-[#e8e6dc]/60 flex gap-1.5 items-center h-[46px]">
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-[#6a9bcc]/50 rounded-full" />
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-[#6a9bcc]/50 rounded-full" />
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-[#6a9bcc]/50 rounded-full" />
             </div>
           </motion.div>
         )}
       </div>
 
       {/* Input Area */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 p-3 pb-safe">
-        <div className="flex items-center gap-2 max-w-[480px] mx-auto">
-          <button aria-label="拍照或上传图片" className="p-2.5 text-gray-400 hover:text-blue-600 transition-colors shrink-0 bg-gray-100 hover:bg-blue-50 rounded-full">
+      <div className="absolute bottom-0 left-0 right-0 bg-[#faf9f5]/80 backdrop-blur-xl border-t border-[#e8e6dc]/60 p-3 pb-safe z-20">
+        <div className="flex items-center gap-3 max-w-[480px] mx-auto px-2">
+          <button type="button" aria-label="拍照或上传图片" className="p-2.5 text-[#b0aea5] hover:text-[#6a9bcc] transition-colors shrink-0 bg-white border border-[#e8e6dc] shadow-sm hover:border-[#6a9bcc]/30 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]">
             <Camera size={22} aria-hidden="true" />
           </button>
-          <div className="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-1.5 border border-transparent focus-within:bg-white focus-within:border-blue-200 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+          <div className="flex-1 bg-white rounded-full flex items-center px-4 py-1.5 border border-[#e8e6dc] shadow-sm focus-within:border-[#6a9bcc] focus-within:ring-2 focus-within:ring-[#6a9bcc]/20 transition-all">
             <input
               type="text"
               value={input}
               aria-label="输入健康问题或上传报告"
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
-              placeholder="输入健康问题或上传报告..."
-              className="flex-1 bg-transparent border-none outline-none py-2 text-[15px] placeholder:text-gray-400"
+              placeholder="输入健康问题或上传报告…"
+              className="flex-1 bg-transparent border-none outline-none py-2 text-[15px] placeholder:text-[#b0aea5] text-[#141413] font-serif"
             />
             <button 
+              type="button"
               aria-label="发送消息"
               onClick={() => handleSend(input)}
               disabled={!input.trim()}
               className={cn(
-                "p-1.5 rounded-full transition-all shrink-0 ml-1",
-                input.trim() ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-400"
+                "p-2 rounded-full transition-all shrink-0 ml-1 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6a9bcc]",
+                input.trim() ? "bg-[#6a9bcc] text-white shadow-md hover:bg-[#5b8cbf]" : "bg-[#e8e6dc] text-[#b0aea5]"
               )}
             >
               <Send size={16} className={cn(input.trim() && "ml-0.5")} aria-hidden="true" />

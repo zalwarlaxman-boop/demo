@@ -66,28 +66,28 @@ export default function PopSci() {
   const [activeTab, setActiveTab] = useState(TABS[0]);
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#faf9f5]">
       {/* Header */}
-      <header className="pt-8 pb-4 px-5 bg-white shrink-0 sticky top-0 z-10">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">有医说医</h1>
-        <p className="text-sm text-gray-500 mt-1">你的专业健康科普空间</p>
+      <header className="pt-10 pb-4 px-5 bg-[#faf9f5] shrink-0 sticky top-0 z-10">
+        <h1 className="text-[28px] font-semibold text-[#141413] tracking-tight font-heading">有医说医</h1>
+        <p className="text-[15px] text-[#b0aea5] mt-1 font-serif">你的专业健康科普空间</p>
         
         {/* Tabs */}
-        <div className="flex space-x-6 mt-6 border-b border-gray-100">
+        <div className="flex space-x-8 mt-8 border-b border-[#e8e6dc]">
           {TABS.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                "pb-3 text-[15px] font-medium transition-colors relative",
-                activeTab === tab ? "text-blue-600" : "text-gray-500 hover:text-gray-800"
+                "pb-3 text-[16px] transition-colors relative outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] rounded-t-sm",
+                activeTab === tab ? "text-[#6a9bcc] font-medium" : "text-[#b0aea5] hover:text-[#141413]"
               )}
             >
               {tab}
               {activeTab === tab && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#6a9bcc]"
                 />
               )}
             </button>
@@ -96,30 +96,33 @@ export default function PopSci() {
       </header>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
+      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 pb-24">
         <AnimatePresence mode="popLayout">
           {activeTab === "科普文章" && (
             <motion.div
               key="articles"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-4"
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="space-y-5"
             >
               {ARTICLES.map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl p-4 shadow-sm active:scale-[0.98] transition-transform">
-                  <div className="flex gap-4">
-                    <div className="flex-1 space-y-2">
-                      <h3 className="font-semibold text-gray-900 leading-snug line-clamp-2">{item.title}</h3>
-                      <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{item.summary}</p>
-                      <div className="flex items-center gap-3 text-[11px] text-gray-400 pt-1">
-                        <span className="flex items-center gap-1"><Eye size={12} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(parseInt(item.views.replace('w', '000').replace('k', '00')))}</span>
-                        <span className="flex items-center gap-1"><ThumbsUp size={12} aria-hidden="true" /> {item.likes}</span>
+                <button type="button" key={item.id} className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md">
+                  <div className="flex gap-5">
+                    <div className="flex-1 space-y-2.5 flex flex-col justify-between">
+                      <div>
+                        <h3 className="font-medium text-[#141413] text-[17px] leading-snug line-clamp-2 font-heading [text-wrap:balance]">{item.title}</h3>
+                        <p className="text-[14px] text-[#b0aea5] line-clamp-2 leading-relaxed mt-1.5">{item.summary}</p>
+                      </div>
+                      <div className="flex items-center gap-4 text-[12px] text-[#b0aea5] tabular-nums">
+                        <span className="flex items-center gap-1.5"><Eye size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(parseInt(item.views.replace('w', '000').replace('k', '00')))}</span>
+                        <span className="flex items-center gap-1.5"><ThumbsUp size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN').format(item.likes)}</span>
                       </div>
                     </div>
-                    <img src={item.image} alt="" width={96} height={96} className="w-24 h-24 object-cover rounded-xl shrink-0" />
+                    <img src={item.image} alt="" width={104} height={104} className="w-[104px] h-[104px] object-cover rounded-xl shrink-0 border border-[#e8e6dc]/30" />
                   </div>
-                </div>
+                </button>
               ))}
             </motion.div>
           )}
@@ -127,28 +130,29 @@ export default function PopSci() {
           {activeTab === "科普视频" && (
             <motion.div
               key="videos"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-4"
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="space-y-5"
             >
               {VIDEOS.map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-[0.98] transition-transform">
+                <button type="button" key={item.id} className="w-full text-left bg-white rounded-[20px] overflow-hidden shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md">
                   <div className="relative">
                     <img src={item.image} alt="" width={640} height={192} className="w-full h-48 object-cover" />
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                      <div className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center">
-                        <PlayCircle className="text-white" size={28} aria-hidden="true" />
+                    <div className="absolute inset-0 bg-[#141413]/30 flex items-center justify-center group-hover:bg-[#141413]/20 transition-colors">
+                      <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg">
+                        <PlayCircle className="text-[#6a9bcc] ml-1" size={32} aria-hidden="true" />
                       </div>
                     </div>
-                    <span className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+                    <span className="absolute bottom-3 right-3 bg-[#141413]/70 text-white text-[12px] px-2 py-1 rounded-md backdrop-blur-sm font-medium tabular-nums">
                       {item.duration}
                     </span>
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 line-clamp-1">{item.title}</h3>
+                    <h3 className="font-medium text-[#141413] text-[16px] line-clamp-1 font-heading">{item.title}</h3>
                   </div>
-                </div>
+                </button>
               ))}
             </motion.div>
           )}
@@ -156,22 +160,25 @@ export default function PopSci() {
           {activeTab === "康复故事" && (
             <motion.div
               key="stories"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="space-y-4"
             >
               {STORIES.map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between active:scale-[0.98] transition-transform">
-                  <div className="flex items-center gap-4">
-                    <img src={item.image} alt="" width={64} height={64} className="w-16 h-16 object-cover rounded-full" />
+                <button type="button" key={item.id} className="w-full text-left bg-white rounded-[20px] p-5 shadow-sm border border-[#e8e6dc]/50 flex items-center justify-between active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md group">
+                  <div className="flex items-center gap-5">
+                    <img src={item.image} alt="" width={64} height={64} className="w-16 h-16 object-cover rounded-full border-2 border-[#faf9f5]" />
                     <div>
-                      <h3 className="font-medium text-gray-900">{item.title}</h3>
-                      <p className="text-sm text-gray-500 mt-1">讲述人：{item.author}</p>
+                      <h3 className="font-medium text-[#141413] text-[16px] font-heading">{item.title}</h3>
+                      <p className="text-[14px] text-[#b0aea5] mt-1">讲述人：{item.author}</p>
                     </div>
                   </div>
-                  <ChevronRight className="text-gray-300" size={20} aria-hidden="true" />
-                </div>
+                  <div className="w-8 h-8 rounded-full bg-[#faf9f5] flex items-center justify-center group-hover:bg-[#6a9bcc]/10 transition-colors">
+                    <ChevronRight className="text-[#b0aea5] group-hover:text-[#6a9bcc] transition-colors" size={20} aria-hidden="true" />
+                  </div>
+                </button>
               ))}
             </motion.div>
           )}

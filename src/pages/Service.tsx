@@ -33,34 +33,34 @@ export default function Service() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 overflow-y-auto">
+    <div className="flex flex-col h-full bg-[#faf9f5] overflow-y-auto">
       {/* Header */}
-      <header className="pt-8 pb-4 px-5 bg-white shrink-0 shadow-sm z-10">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">工在医外</h1>
-        <p className="text-sm text-gray-500 mt-1">专属营养师与健康服务网络</p>
+      <header className="pt-10 pb-4 px-5 bg-[#faf9f5] shrink-0 border-b border-[#e8e6dc]/60 z-10">
+        <h1 className="text-[28px] font-semibold text-[#141413] tracking-tight font-heading">工在医外</h1>
+        <p className="text-[15px] text-[#b0aea5] mt-1 font-serif">专属营养师与健康服务网络</p>
       </header>
 
-      <div className="p-5 space-y-6">
+      <div className="p-5 space-y-8">
         
         {/* Dietitian Section (营养师版块) */}
         <section>
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
+          <div className="bg-[#6a9bcc] rounded-[24px] p-6 text-white shadow-sm border border-[#6a9bcc]/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/4" />
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <Users size={20} className="text-blue-200" aria-hidden="true" />
-                <h2 className="text-lg font-bold">营养师专属服务</h2>
+              <div className="flex items-center gap-2.5 mb-3">
+                <Users size={22} className="text-white/90" aria-hidden="true" />
+                <h2 className="text-[18px] font-semibold font-heading">营养师专属服务</h2>
               </div>
-              <p className="text-blue-100 text-sm mb-5 leading-relaxed">
+              <p className="text-white/80 text-[14px] mb-6 leading-relaxed font-serif max-w-[85%]">
                 加入专业营养师群，获取个性化饮食指导、日常食谱打卡与答疑。
               </p>
-              <button type="button" className="bg-white text-blue-600 px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors shadow-sm active:scale-95">
+              <button type="button" className="bg-white text-[#6a9bcc] px-6 py-2.5 rounded-full text-[14px] font-semibold flex items-center gap-2 hover:bg-[#faf9f5] transition-colors shadow-sm active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#6a9bcc]">
                 立即入群 <ArrowUpRight size={16} aria-hidden="true" />
               </button>
             </div>
             
             {/* Decoration */}
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full flex items-center justify-center">
+            <div className="absolute -bottom-4 -right-4 w-28 h-28 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/10">
               <Users size={48} className="text-white/20" aria-hidden="true" />
             </div>
           </div>
@@ -68,17 +68,17 @@ export default function Service() {
 
         {/* Jump Space (跳转空间) */}
         <section>
-          <h2 className="text-[17px] font-bold text-gray-900 mb-4 px-1">精选服务</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <h2 className="text-[18px] font-semibold text-[#141413] mb-4 px-1 font-heading">精选服务</h2>
+          <div className="grid grid-cols-2 gap-3.5">
             {services.map((item, idx) => {
               const Icon = item.icon;
               return (
-                <button type="button" key={idx} className="w-full text-left bg-white rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer group border border-gray-100/50">
-                  <div className={`${item.bg} w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                    <Icon size={20} className={item.color} aria-hidden="true" />
+                <button type="button" key={idx} className="w-full text-left bg-white rounded-2xl p-4 shadow-sm active:scale-[0.98] transition-all cursor-pointer group border border-[#e8e6dc]/60 outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md hover:border-[#e8e6dc]">
+                  <div className={`${item.bg} w-11 h-11 rounded-[14px] flex items-center justify-center mb-3.5 group-hover:scale-110 transition-transform`}>
+                    <Icon size={22} className={item.color} aria-hidden="true" />
                   </div>
-                  <h3 className="font-bold text-gray-900 text-[15px]">{item.title}</h3>
-                  <p className="text-[11px] text-gray-500 mt-1 leading-snug">{item.desc}</p>
+                  <h3 className="font-semibold text-[#141413] text-[15px] font-heading">{item.title}</h3>
+                  <p className="text-[12px] text-[#b0aea5] mt-1.5 leading-snug font-serif">{item.desc}</p>
                 </button>
               );
             })}

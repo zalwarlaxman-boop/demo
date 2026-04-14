@@ -2,14 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@layer base {
+  :root {
+    --bg-main: #faf9f5;
+    --text-main: #141413;
+    --text-muted: #b0aea5;
+    --bg-muted: #e8e6dc;
+    --medical-blue: #6a9bcc;
+    --health-green: #788c5d;
+    --alert-orange: #d97757;
+  }
+  
+  html {
+    font-family: 'Lora', Georgia, serif;
+    background-color: #f0f0f0;
+  }
+  
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Poppins', Arial, sans-serif;
+  }
+}
+
 @layer utilities {
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 body {
-  @apply bg-gray-200 text-gray-900;
+  @apply bg-[#f0f0f0] text-[var(--text-main)];
   -webkit-tap-highlight-color: transparent;
 }
 
