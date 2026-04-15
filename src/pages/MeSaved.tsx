@@ -66,10 +66,17 @@ export default function MeSaved() {
               if (!item) return null;
               const liked = isLiked(item.type, item.id);
               return (
-                <button
+                <div
                   key={`${item.type}:${item.id}`}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => navigate(`/popsci/${item.type}/${item.id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      navigate(`/popsci/${item.type}/${item.id}`);
+                    }
+                  }}
                   className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-[#e8e6dc]/50 active:scale-[0.99] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md"
                 >
                   <div className="flex items-center gap-4">
@@ -113,7 +120,7 @@ export default function MeSaved() {
                       </div>
                     </div>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>
@@ -122,4 +129,3 @@ export default function MeSaved() {
     </div>
   );
 }
-

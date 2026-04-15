@@ -82,10 +82,17 @@ export default function PopSci() {
                 const saved = isSaved(item.type, item.id);
                 const likeCount = (item.likes || 0) + (liked ? 1 : 0);
                 return (
-                  <button
-                    type="button"
+                  <div
                     key={item.id}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => goDetail(item)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        goDetail(item);
+                      }
+                    }}
                     className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md"
                   >
                   <div className="flex gap-5">
@@ -135,7 +142,7 @@ export default function PopSci() {
                     </div>
                     <img src={item.coverUrl} alt="" width={104} height={104} className="w-[104px] h-[104px] object-cover rounded-xl shrink-0 border border-[#e8e6dc]/30" />
                   </div>
-                  </button>
+                  </div>
                 );
               })}
             </motion.div>
@@ -155,10 +162,17 @@ export default function PopSci() {
                 const saved = isSaved(item.type, item.id);
                 const likeCount = (item.likes || 0) + (liked ? 1 : 0);
                 return (
-                  <button
-                    type="button"
+                  <div
                     key={item.id}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => goDetail(item)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        goDetail(item);
+                      }
+                    }}
                     className="w-full text-left bg-white rounded-[20px] overflow-hidden shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md"
                   >
                   <div className="relative">
@@ -217,7 +231,7 @@ export default function PopSci() {
                       </div>
                     </div>
                   </div>
-                  </button>
+                  </div>
                 );
               })}
             </motion.div>
