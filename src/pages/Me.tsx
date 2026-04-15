@@ -1,12 +1,14 @@
 import { User, Settings, Bookmark, Clock, HelpCircle, Info, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Me() {
+  const navigate = useNavigate();
   const menuItems = [
-    { icon: Bookmark, label: "我的收藏", color: "text-[#6a9bcc]" },
-    { icon: Clock, label: "浏览历史", color: "text-[#d97757]" },
-    { icon: Settings, label: "个人设置", color: "text-[#788c5d]" },
-    { icon: HelpCircle, label: "帮助与反馈", color: "text-[#b0aea5]" },
-    { icon: Info, label: "关于我们", color: "text-[#b0aea5]" },
+    { icon: Bookmark, label: "我的收藏", color: "text-[#6a9bcc]", path: "/me/saved" },
+    { icon: Clock, label: "浏览历史", color: "text-[#d97757]", path: "/me/history" },
+    { icon: Settings, label: "个人设置", color: "text-[#788c5d]", path: "/me/settings" },
+    { icon: HelpCircle, label: "帮助与反馈", color: "text-[#b0aea5]", path: "/me/help" },
+    { icon: Info, label: "关于我们", color: "text-[#b0aea5]", path: "/me/about" },
   ];
 
   return (
@@ -42,6 +44,7 @@ export default function Me() {
               <button
                 key={index}
                 type="button"
+                onClick={() => navigate(item.path)}
                 className="w-full flex items-center justify-between p-4 outline-none focus-visible:bg-[#faf9f5] hover:bg-[#faf9f5]/50 transition-colors group border-b border-[#e8e6dc]/30 last:border-b-0 active:bg-[#faf9f5]"
               >
                 <div className="flex items-center gap-4">

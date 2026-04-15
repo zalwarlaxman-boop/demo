@@ -73,7 +73,8 @@ export default function Interact() {
       // 过滤掉包含 imageUrl 的图片属性，避免存储空间超出
       const messagesToSave = messages.map(msg => {
         if (msg.imageUrl || msg.hiddenText) {
-          const { imageUrl, ...rest } = msg;
+          const { imageUrl: _imageUrl, ...rest } = msg;
+          void _imageUrl;
           return { ...rest, isImagePlaceholder: true }; // 标记该消息曾是一张图片
         }
         return msg;
@@ -149,7 +150,19 @@ export default function Interact() {
       }));
 
       if (!deepseekApiKey) {
-        throw new Error("Missing DeepSeek API key");
+        const query = newUserMsg.hiddenText || newUserMsg.content;
+        const recommendations = getRecommendations(query, 2);
+        setIsTyping(false);
+        setMessages(prev => prev.map(msg =>
+          msg.id === aiMessageId
+            ? {
+                ...msg,
+                content: "当前未配置 DeepSeek API Key，无法进行 AI 解读。\n\n请在部署环境中设置 `VITE_DEEPSEEK_API_KEY`（Vite 会在构建时注入），然后重启/重新构建再试。",
+                recommendations,
+              }
+            : msg
+        ));
+        return;
       }
       const response = await fetch("https://api.deepseek.com/chat/completions", {
         method: "POST",

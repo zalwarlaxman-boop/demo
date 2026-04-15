@@ -28,7 +28,7 @@ export default function Layout() {
       {/* Bottom Navigation Bar */}
       <nav className="bg-white border-t border-[#e8e6dc] flex items-center justify-around h-[68px] px-2 shrink-0 pb-safe">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = item.path === "/" ? location.pathname === "/" : location.pathname === item.path || location.pathname.startsWith(`${item.path}/`);
           const Icon = item.icon;
           return (
             <Link
