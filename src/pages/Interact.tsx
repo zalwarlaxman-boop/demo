@@ -73,7 +73,8 @@ export default function Interact() {
       // 过滤掉包含 imageUrl 的图片属性，避免存储空间超出
       const messagesToSave = messages.map(msg => {
         if (msg.imageUrl || msg.hiddenText) {
-          const { imageUrl, ...rest } = msg;
+          const { imageUrl: _imageUrl, ...rest } = msg;
+          void _imageUrl;
           return { ...rest, isImagePlaceholder: true }; // 标记该消息曾是一张图片
         }
         return msg;

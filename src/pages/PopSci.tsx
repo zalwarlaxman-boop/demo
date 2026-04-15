@@ -1,51 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PlayCircle, ChevronRight, Eye, ThumbsUp } from "lucide-react";
+import { PlayCircle, ChevronRight, Eye, ThumbsUp, Heart, Bookmark, BookmarkCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/components/Layout";
+import { listPopSci, type PopSciItem, type PopSciType } from "@/data/popsciCatalog";
+import { usePopSciState } from "@/hooks/usePopSciState";
 
 const TABS = ["科普文章", "科普视频", "康复故事"];
-
-const ARTICLES = [
-  {
-    id: 1,
-    title: "高血压患者入冬后如何调整用药？心血管专家为您解答",
-    summary: "随着气温下降，血管收缩可能导致血压波动，本文教你如何安全度过寒冬。",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=blood+pressure+monitor+with+winter+background&image_size=landscape_4_3",
-    views: "1.2w",
-    likes: 342,
-  },
-  {
-    id: 2,
-    title: "这5种被吹捧的「健康食品」，其实是在交智商税",
-    summary: "认清营养误区，别再花冤枉钱。营养师带你避开常见饮食陷阱。",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=healthy+food+vegetables+fruits+concept&image_size=landscape_4_3",
-    views: "8k",
-    likes: 215,
-  },
-  {
-    id: 3,
-    title: "总是失眠多梦？可能和你的肠道健康有关",
-    summary: "最新研究表明，肠道菌群与睡眠质量息息相关，改善睡眠从养肠胃开始。",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=peaceful+sleeping+person+moon+stars&image_size=landscape_4_3",
-    views: "5.5k",
-    likes: 189,
-  }
-];
-
-const VIDEOS = [
-  {
-    id: 1,
-    title: "3分钟教你看懂体检报告中的异常指标",
-    duration: "03:15",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=doctor+explaining+medical+chart&image_size=landscape_16_9",
-  },
-  {
-    id: 2,
-    title: "办公室久坐族必备：肩颈放松跟练操",
-    duration: "08:40",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=person+stretching+neck+office+desk&image_size=landscape_16_9",
-  }
-];
 
 const STORIES = [
   {
@@ -64,6 +25,15 @@ const STORIES = [
 
 export default function PopSci() {
   const [activeTab, setActiveTab] = useState(TABS[0]);
+  const navigate = useNavigate();
+  const { isLiked, isSaved, toggleLiked, toggleSaved } = usePopSciState();
+
+  const type: PopSciType = activeTab === "科普视频" ? "video" : "article";
+  const items = useMemo(() => listPopSci(type), [type]);
+
+  const goDetail = (item: PopSciItem) => {
+    navigate(`/popsci/${item.type}/${item.id}`);
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#faf9f5]">
@@ -107,23 +77,67 @@ export default function PopSci() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="space-y-5"
             >
-              {ARTICLES.map((item) => (
-                <button type="button" key={item.id} className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md">
+              {items.map((item) => {
+                const liked = isLiked(item.type, item.id);
+                const saved = isSaved(item.type, item.id);
+                const likeCount = (item.likes || 0) + (liked ? 1 : 0);
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    onClick={() => goDetail(item)}
+                    className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md"
+                  >
                   <div className="flex gap-5">
                     <div className="flex-1 space-y-2.5 flex flex-col justify-between">
                       <div>
                         <h3 className="font-medium text-[#141413] text-[17px] leading-snug line-clamp-2 font-heading [text-wrap:balance]">{item.title}</h3>
                         <p className="text-[14px] text-[#b0aea5] line-clamp-2 leading-relaxed mt-1.5">{item.summary}</p>
                       </div>
-                      <div className="flex items-center gap-4 text-[12px] text-[#b0aea5] tabular-nums">
-                        <span className="flex items-center gap-1.5"><Eye size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(parseInt(item.views.replace('w', '000').replace('k', '00')))}</span>
-                        <span className="flex items-center gap-1.5"><ThumbsUp size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN').format(item.likes)}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 text-[12px] text-[#b0aea5] tabular-nums">
+                          <span className="flex items-center gap-1.5"><Eye size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(item.views || 0)}</span>
+                          <span className="flex items-center gap-1.5"><ThumbsUp size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN').format(likeCount)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleSaved(item.type, item.id);
+                            }}
+                            className={cn(
+                              "w-8 h-8 rounded-full bg-[#faf9f5] border border-[#e8e6dc]/60 flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] transition-colors",
+                              saved ? "text-[#6a9bcc]" : "text-[#b0aea5] hover:text-[#6a9bcc]"
+                            )}
+                            aria-label="收藏"
+                          >
+                            {saved ? <BookmarkCheck size={16} aria-hidden="true" /> : <Bookmark size={16} aria-hidden="true" />}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleLiked(item.type, item.id);
+                            }}
+                            className={cn(
+                              "w-8 h-8 rounded-full bg-[#faf9f5] border border-[#e8e6dc]/60 flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] transition-colors",
+                              liked ? "text-[#d97757]" : "text-[#b0aea5] hover:text-[#d97757]"
+                            )}
+                            aria-label="点赞"
+                          >
+                            <Heart size={16} aria-hidden="true" className={liked ? "fill-current" : ""} />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                    <img src={item.image} alt="" width={104} height={104} className="w-[104px] h-[104px] object-cover rounded-xl shrink-0 border border-[#e8e6dc]/30" />
+                    <img src={item.coverUrl} alt="" width={104} height={104} className="w-[104px] h-[104px] object-cover rounded-xl shrink-0 border border-[#e8e6dc]/30" />
                   </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </motion.div>
           )}
 
@@ -136,24 +150,76 @@ export default function PopSci() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="space-y-5"
             >
-              {VIDEOS.map((item) => (
-                <button type="button" key={item.id} className="w-full text-left bg-white rounded-[20px] overflow-hidden shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md">
+              {items.map((item) => {
+                const liked = isLiked(item.type, item.id);
+                const saved = isSaved(item.type, item.id);
+                const likeCount = (item.likes || 0) + (liked ? 1 : 0);
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    onClick={() => goDetail(item)}
+                    className="w-full text-left bg-white rounded-[20px] overflow-hidden shadow-sm border border-[#e8e6dc]/50 active:scale-[0.98] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md"
+                  >
                   <div className="relative">
-                    <img src={item.image} alt="" width={640} height={192} className="w-full h-48 object-cover" />
+                    <img src={item.coverUrl} alt="" width={640} height={192} className="w-full h-48 object-cover" />
                     <div className="absolute inset-0 bg-[#141413]/30 flex items-center justify-center group-hover:bg-[#141413]/20 transition-colors">
                       <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg">
                         <PlayCircle className="text-[#6a9bcc] ml-1" size={32} aria-hidden="true" />
                       </div>
                     </div>
-                    <span className="absolute bottom-3 right-3 bg-[#141413]/70 text-white text-[12px] px-2 py-1 rounded-md backdrop-blur-sm font-medium tabular-nums">
-                      {item.duration}
-                    </span>
+                    {"duration" in item && item.duration ? (
+                      <span className="absolute bottom-3 right-3 bg-[#141413]/70 text-white text-[12px] px-2 py-1 rounded-md backdrop-blur-sm font-medium tabular-nums">
+                        {item.duration}
+                      </span>
+                    ) : null}
                   </div>
                   <div className="p-4">
-                    <h3 className="font-medium text-[#141413] text-[16px] line-clamp-1 font-heading">{item.title}</h3>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="font-medium text-[#141413] text-[16px] line-clamp-1 font-heading">{item.title}</h3>
+                        <div className="flex items-center gap-4 text-[12px] text-[#b0aea5] mt-2 tabular-nums">
+                          <span className="flex items-center gap-1.5"><Eye size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN', { notation: 'compact' }).format(item.views || 0)}</span>
+                          <span className="flex items-center gap-1.5"><ThumbsUp size={14} aria-hidden="true" /> {new Intl.NumberFormat('zh-CN').format(likeCount)}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSaved(item.type, item.id);
+                          }}
+                          className={cn(
+                            "w-8 h-8 rounded-full bg-[#faf9f5] border border-[#e8e6dc]/60 flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] transition-colors",
+                            saved ? "text-[#6a9bcc]" : "text-[#b0aea5] hover:text-[#6a9bcc]"
+                          )}
+                          aria-label="收藏"
+                        >
+                          {saved ? <BookmarkCheck size={16} aria-hidden="true" /> : <Bookmark size={16} aria-hidden="true" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleLiked(item.type, item.id);
+                          }}
+                          className={cn(
+                            "w-8 h-8 rounded-full bg-[#faf9f5] border border-[#e8e6dc]/60 flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] transition-colors",
+                            liked ? "text-[#d97757]" : "text-[#b0aea5] hover:text-[#d97757]"
+                          )}
+                          aria-label="点赞"
+                        >
+                          <Heart size={16} aria-hidden="true" className={liked ? "fill-current" : ""} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </motion.div>
           )}
 
