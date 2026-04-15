@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, BellRing, Target, ArrowRight, UserCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { listNotices } from "@/data/noticeCatalog";
 
 export default function Manage() {
   const [checkedIn, setCheckedIn] = useState(false);
+  const [checkinTip, setCheckinTip] = useState(false);
+  const navigate = useNavigate();
+  const reminders = useMemo(() => listNotices("reminder"), []);
+  const news = useMemo(() => listNotices("news"), []);
   
   return (
     <div className="flex flex-col h-full bg-[#faf9f5] overflow-y-auto">
@@ -61,7 +67,11 @@ export default function Manage() {
           <div className="w-[1px] h-10 bg-[#e8e6dc]/60"></div>
           <button 
             type="button"
-            onClick={() => setCheckedIn(true)}
+            onClick={() => {
+              setCheckedIn(true);
+              setCheckinTip(true);
+              window.setTimeout(() => setCheckinTip(false), 2000);
+            }}
             disabled={checkedIn}
             className={`px-5 py-2.5 rounded-full text-[14px] font-medium transition-all flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6a9bcc] ${
               checkedIn 
@@ -76,6 +86,11 @@ export default function Manage() {
       </div>
 
       <div className="px-5 pt-4 pb-6 space-y-8 flex-1">
+        {checkinTip ? (
+          <div className="bg-[#6a9bcc]/10 border border-[#6a9bcc]/20 rounded-2xl p-4 text-[#6a9bcc] text-[13px] font-medium">
+            打卡成功，已为你记录今日进度
+          </div>
+        ) : null}
         
         {/* Reminders */}
         <section>
@@ -84,27 +99,36 @@ export default function Manage() {
             <span className="text-[12px] text-[#6a9bcc] font-medium bg-[#6a9bcc]/10 px-2.5 py-1 rounded-full tabular-nums">2条待办</span>
           </div>
           <div className="space-y-3">
-            <button type="button" className="w-full text-left bg-[#d97757]/5 border border-[#d97757]/20 rounded-2xl p-4 flex gap-4 outline-none focus-visible:ring-2 focus-visible:ring-[#d97757] hover:bg-[#d97757]/10 transition-colors">
-              <div className="mt-0.5 text-[#d97757] bg-white rounded-full p-2 shadow-sm h-fit border border-[#d97757]/10 shrink-0">
-                <BellRing size={18} aria-hidden="true" />
-              </div>
-              <div>
-                <h3 className="text-[15px] font-semibold text-[#d97757] font-heading">非医提醒：今晚降温</h3>
-                <p className="text-[13px] text-[#d97757]/80 mt-1.5 leading-relaxed font-serif">
-                  夜间气温将降至 5°C，请注意保暖。高血压患者需特别防范血管收缩引起的血压波动。
-                </p>
-              </div>
-            </button>
-            
-            <button type="button" className="w-full text-left bg-white border border-[#e8e6dc] rounded-2xl p-4 flex gap-4 shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:border-[#6a9bcc]/30 transition-colors">
-              <div className="mt-0.5 text-[#788c5d] bg-[#788c5d]/10 rounded-full p-2 h-fit shrink-0">
-                <CheckCircle2 size={18} aria-hidden="true" />
-              </div>
-              <div>
-                <h3 className="text-[15px] font-semibold text-[#141413] font-heading">用药提醒：降压药</h3>
-                <p className="text-[13px] text-[#b0aea5] mt-1 tabular-nums">预计服药时间 18:30</p>
-              </div>
-            </button>
+            {reminders.slice(0, 2).map((r, idx) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => navigate(`/notice/${r.id}`)}
+                className={
+                  idx === 0
+                    ? "w-full text-left bg-[#d97757]/5 border border-[#d97757]/20 rounded-2xl p-4 flex gap-4 outline-none focus-visible:ring-2 focus-visible:ring-[#d97757] hover:bg-[#d97757]/10 transition-colors"
+                    : "w-full text-left bg-white border border-[#e8e6dc] rounded-2xl p-4 flex gap-4 shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:border-[#6a9bcc]/30 transition-colors"
+                }
+              >
+                <div
+                  className={
+                    idx === 0
+                      ? "mt-0.5 text-[#d97757] bg-white rounded-full p-2 shadow-sm h-fit border border-[#d97757]/10 shrink-0"
+                      : "mt-0.5 text-[#788c5d] bg-[#788c5d]/10 rounded-full p-2 h-fit shrink-0"
+                  }
+                >
+                  {idx === 0 ? <BellRing size={18} aria-hidden="true" /> : <CheckCircle2 size={18} aria-hidden="true" />}
+                </div>
+                <div>
+                  <h3 className={idx === 0 ? "text-[15px] font-semibold text-[#d97757] font-heading" : "text-[15px] font-semibold text-[#141413] font-heading"}>
+                    {r.title}
+                  </h3>
+                  <p className={idx === 0 ? "text-[13px] text-[#d97757]/80 mt-1.5 leading-relaxed font-serif" : "text-[13px] text-[#b0aea5] mt-1 tabular-nums"}>
+                    {r.summary || r.publishedAt || ""}
+                  </p>
+                </div>
+              </button>
+            ))}
           </div>
         </section>
 
@@ -117,19 +141,20 @@ export default function Manage() {
             </button>
           </div>
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#e8e6dc]/50 space-y-4">
-            {[
-              { title: "2024年心血管健康管理指南发布", time: "2小时前" },
-              { title: "冬季适宜的5种室内有氧运动", time: "昨天" },
-              { title: "了解你的体检指标：甘油三酯篇", time: "2天前" }
-            ].map((news, idx) => (
-              <button type="button" key={idx} className="w-full flex justify-between items-center group cursor-pointer text-left outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] rounded-sm py-0.5">
+            {news.slice(0, 3).map((n) => (
+              <button
+                type="button"
+                key={n.id}
+                onClick={() => navigate(`/notice/${n.id}`)}
+                className="w-full flex justify-between items-center group cursor-pointer text-left outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] rounded-sm py-0.5"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#e8e6dc] group-hover:bg-[#6a9bcc] transition-colors shrink-0"></div>
                   <span className="text-[14px] text-[#141413] group-hover:text-[#6a9bcc] transition-colors line-clamp-1 font-serif">
-                    {news.title}
+                    {n.title}
                   </span>
                 </div>
-                <span className="text-[12px] text-[#b0aea5] shrink-0 ml-3 tabular-nums">{news.time}</span>
+                <span className="text-[12px] text-[#b0aea5] shrink-0 ml-3 tabular-nums">{n.publishedAt || ""}</span>
               </button>
             ))}
           </div>

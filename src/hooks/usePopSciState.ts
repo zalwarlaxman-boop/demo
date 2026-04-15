@@ -69,10 +69,11 @@ export function usePopSciState() {
       isSaved,
       toggleLiked,
       toggleSaved,
+      likedKeys: data.liked,
+      savedKeys: data.saved,
       likedCount: data.liked.length,
       savedCount: data.saved.length,
     }),
-    [data.liked.length, data.saved.length, isLiked, isSaved, toggleLiked, toggleSaved]
+    [data.liked, data.saved, isLiked, isSaved, toggleLiked, toggleSaved]
   );
 }
-
