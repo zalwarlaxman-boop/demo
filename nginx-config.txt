@@ -1,0 +1,21 @@
+server {
+    listen 80;
+    server_name demo.hzmwmt.com;
+
+    # 强制将 HTTP 重定向到 HTTPS（如果您有配置证书的话）
+    # return 301 https://$host$request_uri;
+
+    root /www/wwwroot/demo.hzmwmt.com/dist;
+    index index.html index.htm;
+
+    location / {
+        # 处理 React Router 单页应用的路由，将所有请求指向 index.html
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 静态资源缓存设置（可选）
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires max;
+        log_not_found off;
+    }
+}

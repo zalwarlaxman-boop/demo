@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name demo.hzmwmt.com;
+
+    # 如果有 HTTPS 证书，建议重定向到 HTTPS
+    # return 301 https://$host$request_uri;
+
+    # 替换为你实际上传 dist 文件夹的路径
+    root /www/wwwroot/demo.hzmwmt.com/dist;
+    index index.html index.htm;
+
+    # 关键配置：解决 React Router 单页应用刷新报 404 的问题
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 可选：静态资源缓存
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires max;
+        log_not_found off;
+    }
+}

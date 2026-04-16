@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Stethoscope, MessageCircleHeart, Activity, LayoutGrid } from "lucide-react";
+import { Stethoscope, MessageCircleHeart, Activity, LayoutGrid, User } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -12,6 +12,7 @@ const navItems = [
   { path: "/interact", label: "互动", icon: MessageCircleHeart },
   { path: "/manage", label: "管理", icon: Activity },
   { path: "/service", label: "服务", icon: LayoutGrid },
+  { path: "/me", label: "我的", icon: User },
 ];
 
 export default function Layout() {
@@ -27,7 +28,7 @@ export default function Layout() {
       {/* Bottom Navigation Bar */}
       <nav className="bg-white border-t border-[#e8e6dc] flex items-center justify-around h-[68px] px-2 shrink-0 pb-safe">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = item.path === "/" ? location.pathname === "/" : location.pathname === item.path || location.pathname.startsWith(`${item.path}/`);
           const Icon = item.icon;
           return (
             <Link
