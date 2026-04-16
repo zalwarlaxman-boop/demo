@@ -17,16 +17,19 @@ export default function SplashScreen({ onRequestClose }: SplashScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#faf9f5] via-[#f6f8fb] to-[#d9e8f7]"
+      className="fixed inset-0 z-[9999] flex justify-center pointer-events-none"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={containerTransition}
-      onClick={onRequestClose}
       role="presentation"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.75),rgba(255,255,255,0)_55%)]" />
-      <div className="relative w-full max-w-[520px] px-6">
+      <div 
+        className="relative flex items-center justify-center w-full max-w-[480px] h-full bg-gradient-to-br from-[#faf9f5] via-[#f6f8fb] to-[#d9e8f7] pointer-events-auto"
+        onClick={onRequestClose}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.75),rgba(255,255,255,0)_55%)] pointer-events-none" />
+        <div className="relative w-full px-6 pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -44,6 +47,7 @@ export default function SplashScreen({ onRequestClose }: SplashScreenProps) {
             <div>少生病，更健康</div>
           </div>
         </motion.div>
+        </div>
       </div>
     </motion.div>
   );
