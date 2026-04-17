@@ -3,19 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>开屏动画方案预览</title>
+  <title>***医生智能体 - 推广与视觉方案</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
-    .fade-in-up {
-      animation: fadeInUp 1s ease-out forwards;
-      opacity: 0;
-      transform: translateY(20px);
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+    
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
     }
+
+    h1, h2, h3, .serif-text {
+      font-family: 'Noto Serif SC', serif;
+    }
+
+    /* Animations */
+    .fade-in-up {
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    
+    .fade-in {
+      animation: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+
     .delay-100 { animation-delay: 0.1s; }
+    .delay-300 { animation-delay: 0.3s; }
     .delay-500 { animation-delay: 0.5s; }
+    .delay-700 { animation-delay: 0.7s; }
     .delay-900 { animation-delay: 0.9s; }
-    .delay-1300 { animation-delay: 1.3s; }
+    .delay-1100 { animation-delay: 1.1s; }
 
     @keyframes fadeInUp {
       to {
@@ -23,37 +43,199 @@
         transform: translateY(0);
       }
     }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    
+    /* Mockup Shine */
+    .mockup-shine {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+      transform: skewX(-20deg);
+      animation: shine 6s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      20% { left: 200%; }
+      100% { left: 200%; }
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Active Theme Button */
+    .theme-btn {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .theme-btn.active {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      border-color: #3b82f6;
+    }
+    .theme-btn.active .indicator {
+      background-color: #3b82f6;
+      transform: scale(1);
+    }
   </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
-  <div class="flex gap-8 max-w-5xl w-full">
-    <!-- 控制面板 -->
-    <div class="w-1/3 bg-white p-6 rounded-xl shadow-lg flex flex-col gap-4">
-      <h2 class="text-xl font-bold mb-4">选择开屏视觉方案</h2>
-      <button onclick="setTheme('minimal')" class="px-4 py-3 text-left rounded-lg border hover:bg-gray-50 focus:ring-2 ring-blue-500 transition-all">
-        <div class="font-bold text-gray-900">方案 A: 极简留白 (Minimal)</div>
-        <div class="text-sm text-gray-500 mt-1">贴合当前项目的主题色（米白背景，医疗蓝文字），专业冷静，过渡自然。</div>
-      </button>
-      <button onclick="setTheme('tech-blue')" class="px-4 py-3 text-left rounded-lg border hover:bg-gray-50 focus:ring-2 ring-blue-500 transition-all">
-        <div class="font-bold text-gray-900">方案 B: 科技医疗蓝 (Tech Blue)</div>
-        <div class="text-sm text-gray-500 mt-1">深蓝渐变背景，凸显"智能体"的科技感与沉浸感。</div>
-      </button>
-      <button onclick="setTheme('warm-green')" class="px-4 py-3 text-left rounded-lg border hover:bg-gray-50 focus:ring-2 ring-blue-500 transition-all">
-        <div class="font-bold text-gray-900">方案 C: 温暖健康绿 (Warm Green)</div>
-        <div class="text-sm text-gray-500 mt-1">治愈系浅绿渐变，强调"健康"与"不担心"的安心感。</div>
-      </button>
-      <div class="mt-4 pt-4 border-t border-gray-100">
-        <button onclick="replay()" class="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all text-center">
-          重新播放动效
-        </button>
+  <!-- 左侧：推广内容与控制台 -->
+  <div class="w-full md:w-1/2 lg:w-5/12 min-h-screen flex flex-col justify-center p-8 lg:p-16 xl:p-24 relative z-10 bg-white shadow-[20px_0_40px_rgba(0,0,0,0.03)]">
+    
+    <!-- Logo / Brand -->
+    <div class="absolute top-8 left-8 lg:top-12 lg:left-16 flex items-center gap-3 fade-in">
+      <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold serif-text">
+        +
       </div>
+      <span class="font-bold tracking-widest text-sm text-gray-800 uppercase">Health AI</span>
     </div>
 
-    <!-- 预览区域 (模拟手机) -->
-    <div class="w-[400px] h-[800px] bg-black rounded-[3rem] p-4 shadow-2xl relative overflow-hidden border-8 border-gray-900 flex-shrink-0">
-      <div id="preview-container" class="w-full h-full rounded-[2.2rem] overflow-hidden relative flex flex-col items-center justify-center p-8 bg-[#faf9f5] transition-colors duration-500">
-        <div id="animation-content" class="w-full h-full flex flex-col items-center justify-center relative"></div>
+    <!-- Main Copy -->
+    <div class="max-w-md mt-16 md:mt-0">
+      <div class="inline-block px-3 py-1 mb-6 rounded-full bg-blue-50 text-blue-600 text-xs font-bold tracking-wider uppercase fade-in-up">
+        全新上线 · v2.0
+      </div>
+      
+      <h1 class="text-4xl lg:text-5xl xl:text-6xl font-black leading-tight mb-6 text-gray-900 fade-in-up delay-100 serif-text">
+        让健康<br/>
+        <span class="text-blue-600">触手可及</span>
+      </h1>
+      
+      <p class="text-lg text-gray-600 mb-10 leading-relaxed fade-in-up delay-300">
+        ***医生的专属智能体。融合前沿人工智能与专业医疗积淀，为您提供全天候的健康陪伴。生了病，不担心；少生病，更健康。
+      </p>
+
+      <!-- Features -->
+      <div class="grid grid-cols-2 gap-6 mb-12 fade-in-up delay-500">
+        <div class="flex flex-col gap-2">
+          <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mb-2">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+          </div>
+          <h3 class="font-bold text-gray-900">智能问诊</h3>
+          <p class="text-sm text-gray-500">随时解答您的健康疑惑</p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 mb-2">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h3 class="font-bold text-gray-900">报告解读</h3>
+          <p class="text-sm text-gray-500">一键拍报告，秒出解读</p>
+        </div>
+      </div>
+
+      <!-- Theme Controls -->
+      <div class="space-y-4 fade-in-up delay-700">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-bold text-gray-400 tracking-widest uppercase">选择视觉方案体验</h2>
+          <button onclick="replay()" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            重新播放
+          </button>
+        </div>
+
+        <button onclick="setTheme('minimal', this)" class="theme-btn active w-full p-4 rounded-xl border border-gray-200 bg-white flex items-center gap-4 group">
+          <div class="w-12 h-12 rounded-lg bg-[#faf9f5] border border-gray-100 flex items-center justify-center shrink-0">
+            <div class="w-4 h-4 rounded-full bg-[#141413]"></div>
+          </div>
+          <div class="text-left flex-1">
+            <div class="font-bold text-gray-900">方案 A: 极简留白</div>
+            <div class="text-xs text-gray-500 mt-1">贴合主题色，专业冷静，过渡自然</div>
+          </div>
+          <div class="indicator w-3 h-3 rounded-full bg-blue-600 scale-100 transition-transform"></div>
+        </button>
+
+        <button onclick="setTheme('tech-blue', this)" class="theme-btn w-full p-4 rounded-xl border border-gray-200 bg-white flex items-center gap-4 group">
+          <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e3a8a] to-[#3b82f6] flex items-center justify-center shrink-0">
+            <div class="w-4 h-4 rounded-full bg-white"></div>
+          </div>
+          <div class="text-left flex-1">
+            <div class="font-bold text-gray-900">方案 B: 科技医疗蓝</div>
+            <div class="text-xs text-gray-500 mt-1">深蓝渐变，凸显智能体科技感</div>
+          </div>
+          <div class="indicator w-3 h-3 rounded-full bg-gray-200 scale-0 transition-transform group-hover:scale-50"></div>
+        </button>
+
+        <button onclick="setTheme('warm-green', this)" class="theme-btn w-full p-4 rounded-xl border border-gray-200 bg-white flex items-center gap-4 group">
+          <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-green-100 flex items-center justify-center shrink-0">
+            <div class="w-4 h-4 rounded-full bg-[#16a34a]"></div>
+          </div>
+          <div class="text-left flex-1">
+            <div class="font-bold text-gray-900">方案 C: 温暖健康绿</div>
+            <div class="text-xs text-gray-500 mt-1">治愈系浅绿，强调安心感</div>
+          </div>
+          <div class="indicator w-3 h-3 rounded-full bg-gray-200 scale-0 transition-transform group-hover:scale-50"></div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 右侧：视觉预览与场景展示 -->
+  <div class="w-full md:w-1/2 lg:w-7/12 relative min-h-screen flex items-center justify-center p-8 overflow-hidden bg-gray-50">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20clean%2C%20modern%2C%20high-end%20medical%20clinic%20interior%20with%20soft%20natural%20sunlight%2C%20calming%20and%20healing%20atmosphere%2C%20minimalist%20design%2C%20elegant%20wood%20textures%20and%20subtle%20blue%20tones%2C%20photorealistic%2C%20architectural%20photography%2C%208k%20resolution&image_size=landscape_16_9" 
+           alt="Medical Clinic Interior" 
+           class="w-full h-full object-cover opacity-30" />
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 to-slate-100/90 backdrop-blur-sm"></div>
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-1/4 left-1/4 w-64 h-64 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+
+    <!-- Mockup Container -->
+    <div class="relative z-10 fade-in-up delay-500">
+      <!-- Floating Badges -->
+      <div class="absolute -left-16 top-32 glass px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-[bounce_4s_infinite]">
+        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">✓</div>
+        <div>
+          <div class="text-xs text-gray-500">健康评分</div>
+          <div class="font-bold text-gray-900">98 优秀</div>
+        </div>
+      </div>
+      
+      <div class="absolute -right-12 bottom-40 glass px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-[bounce_5s_infinite]" style="animation-delay: 1s;">
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+          <div class="text-xs text-gray-500">智能分析</div>
+          <div class="font-bold text-gray-900">报告已生成</div>
+        </div>
+      </div>
+
+      <!-- Phone Device Mockup -->
+      <div class="w-[340px] h-[720px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl relative border-[6px] border-gray-800 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+        <!-- Notch -->
+        <div class="absolute top-0 inset-x-0 h-7 flex justify-center z-50">
+          <div class="w-32 h-6 bg-gray-900 rounded-b-3xl"></div>
+        </div>
+        
+        <div class="mockup-shine"></div>
+
+        <!-- Screen -->
+        <div id="preview-container" class="w-full h-full rounded-[2.5rem] overflow-hidden relative bg-[#faf9f5] transition-colors duration-700">
+          <div id="animation-content" class="w-full h-full relative"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -64,64 +246,109 @@
         bg: 'bg-[#faf9f5]',
         title: 'text-[#141413]',
         slogan: 'text-[#6a9bcc]',
-        sub: 'text-[#b0aea5]'
+        sub: 'text-[#b0aea5]',
+        imgPrompt: 'Abstract elegant 3D white geometric shapes floating in soft studio lighting, medical aesthetic, pure, clean, minimalist, high quality, 8k',
+        highlight: '极简纯粹'
       },
       'tech-blue': {
-        bg: 'bg-gradient-to-br from-[#1e3a8a] to-[#3b82f6]',
+        bg: 'bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#3b82f6]',
         title: 'text-white',
-        slogan: 'text-blue-100',
-        sub: 'text-blue-200/70'
+        slogan: 'text-blue-200',
+        sub: 'text-blue-300/70',
+        imgPrompt: 'Abstract glowing blue digital neural network, medical AI concept, holographic medical cross, futuristic technology, dark blue background, cinematic lighting, 8k',
+        highlight: '前沿科技'
       },
       'warm-green': {
-        bg: 'bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7]',
+        bg: 'bg-gradient-to-br from-[#f0fdf4] to-[#bbf7d0]',
         title: 'text-[#14532d]',
         slogan: 'text-[#16a34a]',
-        sub: 'text-[#15803d]/70'
+        sub: 'text-[#15803d]/70',
+        imgPrompt: 'Close up of fresh green leaves with morning dew and soft sunlight, healing, nature, health, wellness, macro photography, soft bokeh, 8k',
+        highlight: '自然生机'
       }
     };
 
     let currentTheme = 'minimal';
 
-    function setTheme(theme) {
+    function setTheme(theme, btnElement) {
       currentTheme = theme;
+      
+      // Update buttons
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.querySelector('.indicator').classList.replace('scale-100', 'scale-0');
+        btn.querySelector('.indicator').classList.replace('bg-blue-600', 'bg-gray-200');
+      });
+      
+      if(btnElement) {
+        btnElement.classList.add('active');
+        btnElement.querySelector('.indicator').classList.replace('scale-0', 'scale-100');
+        btnElement.querySelector('.indicator').classList.replace('bg-gray-200', 'bg-blue-600');
+      }
+
+      // Update container bg
       const container = document.getElementById('preview-container');
-      container.className = `w-full h-full rounded-[2.2rem] overflow-hidden relative flex flex-col items-center justify-center p-8 transition-colors duration-500 ${themes[theme].bg}`;
+      container.className = `w-full h-full rounded-[2.5rem] overflow-hidden relative transition-all duration-700 ${themes[theme].bg}`;
+      
       replay();
     }
 
     function replay() {
       const content = document.getElementById('animation-content');
       const t = themes[currentTheme];
+      const imgUrl = `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(t.imgPrompt)}&image_size=square`;
+      
+      // Force DOM reflow to restart animations
+      content.innerHTML = '';
+      void content.offsetWidth;
       
       content.innerHTML = `
-        <div class="flex-1 flex flex-col items-center justify-center w-full gap-6">
-          <div class="flex flex-col items-center gap-4 fade-in-up delay-100">
-            <div class="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg ${currentTheme === 'tech-blue' ? 'bg-white/10 backdrop-blur' : 'bg-white'}">
-              <svg class="w-10 h-10 ${currentTheme === 'tech-blue' ? 'text-white' : 'text-[#6a9bcc]'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
+        <!-- Top decorative element -->
+        <div class="absolute top-12 left-0 w-full flex justify-center fade-in-up delay-100">
+          <div class="px-4 py-1.5 rounded-full backdrop-blur-md bg-white/20 border border-white/30 text-xs font-bold tracking-widest ${t.title} opacity-80">
+            ${t.highlight}
+          </div>
+        </div>
+
+        <div class="flex-1 h-full flex flex-col items-center justify-center w-full px-8">
+          
+          <!-- Image Graphic -->
+          <div class="relative mb-10 fade-in-up delay-300">
+            <div class="w-40 h-40 rounded-[2rem] overflow-hidden shadow-2xl relative z-10 border-4 ${currentTheme === 'tech-blue' ? 'border-white/10' : 'border-white'}">
+              <img src="${imgUrl}" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" alt="Theme Graphic"/>
             </div>
-            <h1 class="text-2xl font-bold tracking-wider ${t.title}" style="font-family: 'Noto Serif SC', serif;">***医生的智能体空间</h1>
+            <!-- Glow effect -->
+            <div class="absolute inset-0 bg-current opacity-30 blur-2xl rounded-full transform scale-110 z-0 ${t.slogan}"></div>
           </div>
 
-          <div class="fade-in-up delay-500 mt-8 text-center">
-            <p class="text-lg font-medium tracking-widest leading-relaxed ${t.slogan}" style="font-family: 'Noto Sans SC', sans-serif;">
+          <!-- Text Content -->
+          <div class="flex flex-col items-center text-center w-full">
+            <h1 class="text-3xl font-black tracking-wider ${t.title} mb-4 fade-in-up delay-500 serif-text leading-tight">
+              ***医生的<br/>智能体空间
+            </h1>
+            
+            <p class="text-[15px] font-medium tracking-widest leading-relaxed ${t.slogan} fade-in-up delay-700">
               让健康触手可及<br/>做自我健康第一责任人
             </p>
           </div>
         </div>
 
-        <div class="absolute bottom-12 w-full flex flex-col items-center gap-2 fade-in-up delay-900">
-          <div class="flex items-center gap-4 text-sm font-medium tracking-widest ${t.sub}">
+        <!-- Bottom Footer -->
+        <div class="absolute bottom-10 w-full flex flex-col items-center gap-2 fade-in-up delay-900">
+          <div class="flex items-center gap-3 text-xs font-medium tracking-widest ${t.sub} uppercase">
             <span>生了病，不担心</span>
-            <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
+            <span class="w-1 h-1 rounded-full bg-current opacity-60"></span>
             <span>少生病，更健康</span>
           </div>
+          <div class="w-1/3 h-1 mt-4 rounded-full bg-current opacity-20"></div>
         </div>
       `;
     }
 
-    setTheme('minimal');
+    // Initialize
+    window.onload = () => {
+      setTheme('minimal', document.querySelector('.theme-btn'));
+    };
   </script>
 </body>
 </html>
