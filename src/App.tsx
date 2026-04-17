@@ -11,6 +11,7 @@ import ServiceDetail from "./pages/ServiceDetail";
 import NoticeDetail from "./pages/NoticeDetail";
 import MeSaved from "./pages/MeSaved";
 import MePlaceholder from "./pages/MePlaceholder";
+import AdDietitian from "./pages/AdDietitian";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="me/about" element={<MePlaceholder title="关于我们" description="用于展示产品介绍、免责声明与版本信息。" />} />
           <Route path="notice/:id" element={<NoticeDetail />} />
           <Route path="content/:id" element={<ContentDetail />} />
+          <Route path="ad/dietitian" element={<AdDietitian />} />
         </Route>
       </Routes>
     </Router>
