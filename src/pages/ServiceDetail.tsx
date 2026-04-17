@@ -58,14 +58,13 @@ export default function ServiceDetail() {
               </div>
             </div>
 
-            <a
-              href={item.ctaUrl}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={() => navigate(item.ctaUrl)}
               className="w-full bg-[#6a9bcc] text-white px-5 py-3 rounded-full text-[14px] font-semibold flex items-center justify-center gap-2 hover:bg-[#5b8cbf] transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6a9bcc]"
             >
               {item.ctaLabel} <ExternalLink size={16} aria-hidden="true" />
-            </a>
+            </button>
           </>
         )}
       </div>
