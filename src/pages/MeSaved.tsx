@@ -54,7 +54,7 @@ export default function MeSaved() {
             <p className="mt-1 text-[13px] text-[#b0aea5] font-serif">去科普页面收藏文章或视频吧</p>
             <button
               type="button"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/campaign")}
               className="mt-4 bg-[#6a9bcc] text-white px-5 py-2.5 rounded-full text-[14px] font-medium shadow-sm hover:bg-[#5b8cbf] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6a9bcc]"
             >
               去科普
@@ -70,11 +70,11 @@ export default function MeSaved() {
                   key={`${item.type}:${item.id}`}
                   role="button"
                   tabIndex={0}
-                  onClick={() => navigate(`/popsci/${item.type}/${item.id}`)}
+                  onClick={() => navigate("/campaign")}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      navigate(`/popsci/${item.type}/${item.id}`);
+                      navigate("/campaign");
                     }
                   }}
                   className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-[#e8e6dc]/50 active:scale-[0.99] transition-transform outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md"

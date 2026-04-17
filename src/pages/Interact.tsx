@@ -356,7 +356,7 @@ export default function Interact() {
                       <button
                         key={rec.id}
                         type="button"
-                        onClick={() => navigate(`/content/${rec.id}`)}
+                        onClick={() => navigate("/campaign")}
                         className="bg-white border border-[#e8e6dc] shadow-sm rounded-[16px] p-3 flex items-center justify-between w-full hover:border-[#6a9bcc]/40 hover:bg-[#6a9bcc]/5 transition-colors group outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]"
                       >
                         <div className="flex items-center gap-2 min-w-0">

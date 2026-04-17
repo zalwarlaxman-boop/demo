@@ -82,7 +82,7 @@ export default function ContentDetail() {
 
             <div className="grid grid-cols-2 gap-3">
               <Link
-                to="/service"
+                to="/campaign"
                 className={cn(
                   "w-full bg-white border border-[#e8e6dc]/60 rounded-2xl p-4 shadow-sm hover:border-[#6a9bcc]/30 hover:bg-[#6a9bcc]/5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]",
                   "flex items-center justify-between"
@@ -130,4 +130,3 @@ export default function ContentDetail() {
     </div>
   );
 }
-
