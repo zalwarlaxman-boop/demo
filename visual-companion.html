@@ -3,199 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>广告落地页方案预览</title>
+  <title>开屏动画方案预览</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
-    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in-up {
+      animation: fadeInUp 1s ease-out forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-500 { animation-delay: 0.5s; }
+    .delay-900 { animation-delay: 0.9s; }
+    .delay-1300 { animation-delay: 1.3s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
-<body class="bg-gray-50 flex items-start justify-center min-h-screen p-8">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-  <div class="flex gap-8 max-w-6xl w-full">
+  <div class="flex gap-8 max-w-5xl w-full">
     <!-- 控制面板 -->
-    <div class="w-1/3 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4 sticky top-8 h-fit">
-      <div>
-        <h2 class="text-xl font-bold mb-1">广告落地页方向探索</h2>
-        <p class="text-sm text-gray-500 mb-6">为您准备了3种不同的文案与视觉方向，请选择最符合预期的方案。</p>
+    <div class="w-1/3 bg-white p-6 rounded-xl shadow-lg flex flex-col gap-4">
+      <h2 class="text-xl font-bold mb-4">选择开屏视觉方案</h2>
+      <button onclick="setTheme('minimal')" class="px-4 py-3 text-left rounded-lg border hover:bg-gray-50 focus:ring-2 ring-blue-500 transition-all">
+        <div class="font-bold text-gray-900">方案 A: 极简留白 (Minimal)</div>
+        <div class="text-sm text-gray-500 mt-1">贴合当前项目的主题色（米白背景，医疗蓝文字），专业冷静，过渡自然。</div>
+      </button>
+      <button onclick="setTheme('tech-blue')" class="px-4 py-3 text-left rounded-lg border hover:bg-gray-50 focus:ring-2 ring-blue-500 transition-all">
+        <div class="font-bold text-gray-900">方案 B: 科技医疗蓝 (Tech Blue)</div>
+        <div class="text-sm text-gray-500 mt-1">深蓝渐变背景，凸显"智能体"的科技感与沉浸感。</div>
+      </button>
+      <button onclick="setTheme('warm-green')" class="px-4 py-3 text-left rounded-lg border hover:bg-gray-50 focus:ring-2 ring-blue-500 transition-all">
+        <div class="font-bold text-gray-900">方案 C: 温暖健康绿 (Warm Green)</div>
+        <div class="text-sm text-gray-500 mt-1">治愈系浅绿渐变，强调"健康"与"不担心"的安心感。</div>
+      </button>
+      <div class="mt-4 pt-4 border-t border-gray-100">
+        <button onclick="replay()" class="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all text-center">
+          重新播放动效
+        </button>
       </div>
-
-      <button onclick="setTheme('professional')" class="p-4 text-left rounded-xl border-2 transition-all theme-btn professional-btn">
-        <div class="font-bold text-gray-900 flex items-center justify-between">
-          方案 A: 专业权威感
-          <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">主推</span>
-        </div>
-        <div class="text-sm text-gray-500 mt-2">强调医疗背景、医生背书。适合建立信任，转化对专业度要求高的用户。</div>
-      </button>
-
-      <button onclick="setTheme('warm')" class="p-4 text-left rounded-xl border-2 border-transparent hover:border-gray-200 transition-all theme-btn warm-btn">
-        <div class="font-bold text-gray-900">方案 B: 贴心陪伴感</div>
-        <div class="text-sm text-gray-500 mt-2">强调AI智能体的24小时陪伴属性。文案亲切，视觉温暖，适合日常健康管理诉求。</div>
-      </button>
-
-      <button onclick="setTheme('efficient')" class="p-4 text-left rounded-xl border-2 border-transparent hover:border-gray-200 transition-all theme-btn efficient-btn">
-        <div class="font-bold text-gray-900">方案 C: 高效便捷感</div>
-        <div class="text-sm text-gray-500 mt-2">直击痛点（如看懂体检报告、小病自查）。文案直接，视觉科技感强，适合快节奏人群。</div>
-      </button>
     </div>
 
     <!-- 预览区域 (模拟手机) -->
-    <div class="w-[400px] bg-black rounded-[3rem] p-4 shadow-2xl relative border-8 border-gray-900 flex-shrink-0 mx-auto">
-      <div id="preview-container" class="w-full h-[800px] rounded-[2.2rem] overflow-y-auto bg-white relative no-scrollbar">
-        <!-- 内容动态注入 -->
-        <div id="content-root" class="w-full pb-20"></div>
+    <div class="w-[400px] h-[800px] bg-black rounded-[3rem] p-4 shadow-2xl relative overflow-hidden border-8 border-gray-900 flex-shrink-0">
+      <div id="preview-container" class="w-full h-full rounded-[2.2rem] overflow-hidden relative flex flex-col items-center justify-center p-8 bg-[#faf9f5] transition-colors duration-500">
+        <div id="animation-content" class="w-full h-full flex flex-col items-center justify-center relative"></div>
       </div>
     </div>
   </div>
 
   <script>
-    const contentData = {
-      professional: {
-        colors: {
-          primary: 'bg-blue-600',
-          text: 'text-blue-900',
-          light: 'bg-blue-50'
-        },
-        heroImg: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80',
-        headline: '三甲名医的智慧结晶<br/>您的专属健康专家',
-        subhead: '基于百万真实医疗语料训练，为您提供严谨、专业的健康问答与疾病科普。',
-        features: [
-          { icon: '🛡️', title: '权威科普', desc: '医生严选健康资讯' },
-          { icon: '👨‍⚕️', title: '专业模型', desc: '医疗级AI精准问答' },
-          { icon: '📑', title: '报告解读', desc: '一键读懂体检指标' }
-        ],
-        cta: '立即开启专业守护'
+    const themes = {
+      'minimal': {
+        bg: 'bg-[#faf9f5]',
+        title: 'text-[#141413]',
+        slogan: 'text-[#6a9bcc]',
+        sub: 'text-[#b0aea5]'
       },
-      warm: {
-        colors: {
-          primary: 'bg-green-500',
-          text: 'text-green-900',
-          light: 'bg-green-50'
-        },
-        heroImg: 'https://images.unsplash.com/photo-1516841273335-e39b37888115?auto=format&fit=crop&w=800&q=80',
-        headline: '生了病，不担心<br/>少生病，更健康',
-        subhead: '24小时在线的贴心健康管家，读懂你的每一次不适，陪伴你的每一天健康。',
-        features: [
-          { icon: '💚', title: '全天候陪伴', desc: '随时随地解答疑惑' },
-          { icon: '🎯', title: '个性化画像', desc: '记住你的健康习惯' },
-          { icon: '🥗', title: '营养师指导', desc: '定制专属饮食方案' }
-        ],
-        cta: '免费领取健康管家'
+      'tech-blue': {
+        bg: 'bg-gradient-to-br from-[#1e3a8a] to-[#3b82f6]',
+        title: 'text-white',
+        slogan: 'text-blue-100',
+        sub: 'text-blue-200/70'
       },
-      efficient: {
-        colors: {
-          primary: 'bg-indigo-600',
-          text: 'text-indigo-900',
-          light: 'bg-indigo-50'
-        },
-        heroImg: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
-        headline: '拍张照，秒懂报告<br/>健康问题一键查',
-        subhead: '搭载最新OCR识别与AI大模型，省去排队烦恼，快速获取健康建议。',
-        features: [
-          { icon: '📸', title: '拍照识图', desc: '秒读化验单体检表' },
-          { icon: '⚡', title: '极速响应', desc: '1秒获取健康解答' },
-          { icon: '🔗', title: '绿通直达', desc: '一键预约线下服务' }
-        ],
-        cta: '体验极速健康问答'
+      'warm-green': {
+        bg: 'bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7]',
+        title: 'text-[#14532d]',
+        slogan: 'text-[#16a34a]',
+        sub: 'text-[#15803d]/70'
       }
     };
 
-    function setTheme(themeKey) {
-      // Update buttons
-      document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.classList.remove('border-blue-500', 'bg-blue-50', 'border-green-500', 'bg-green-50', 'border-indigo-500', 'bg-indigo-50');
-        btn.classList.add('border-transparent');
-      });
-      
-      const activeBtn = document.querySelector(`.${themeKey}-btn`);
-      activeBtn.classList.remove('border-transparent');
-      
-      let activeClass = '';
-      if(themeKey === 'professional') activeClass = 'border-blue-500 bg-blue-50';
-      if(themeKey === 'warm') activeClass = 'border-green-500 bg-green-50';
-      if(themeKey === 'efficient') activeClass = 'border-indigo-500 bg-indigo-50';
-      
-      activeBtn.className = `p-4 text-left rounded-xl border-2 transition-all theme-btn ${themeKey}-btn ${activeClass}`;
+    let currentTheme = 'minimal';
 
-      // Render content
-      const data = contentData[themeKey];
-      const root = document.getElementById('content-root');
+    function setTheme(theme) {
+      currentTheme = theme;
+      const container = document.getElementById('preview-container');
+      container.className = `w-full h-full rounded-[2.2rem] overflow-hidden relative flex flex-col items-center justify-center p-8 transition-colors duration-500 ${themes[theme].bg}`;
+      replay();
+    }
+
+    function replay() {
+      const content = document.getElementById('animation-content');
+      const t = themes[currentTheme];
       
-      root.innerHTML = `
-        <div class="fade-in">
-          <!-- Hero Section -->
-          <div class="relative h-72">
-            <img src="${data.heroImg}" class="w-full h-full object-cover" alt="Hero">
-            <div class="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent"></div>
-            
-            <div class="absolute bottom-0 left-0 w-full p-6 pb-2">
-              <span class="inline-block px-2 py-1 ${data.colors.light} ${data.colors.text} text-xs font-bold rounded mb-3">
-                MedTalent 智能体空间
-              </span>
-              <h1 class="text-3xl font-bold leading-tight mb-3" style="font-family: 'Noto Serif SC', serif;">
-                ${data.headline}
-              </h1>
-              <p class="text-sm text-gray-600 leading-relaxed">
-                ${data.subhead}
-              </p>
+      content.innerHTML = `
+        <div class="flex-1 flex flex-col items-center justify-center w-full gap-6">
+          <div class="flex flex-col items-center gap-4 fade-in-up delay-100">
+            <div class="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg ${currentTheme === 'tech-blue' ? 'bg-white/10 backdrop-blur' : 'bg-white'}">
+              <svg class="w-10 h-10 ${currentTheme === 'tech-blue' ? 'text-white' : 'text-[#6a9bcc]'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
             </div>
+            <h1 class="text-2xl font-bold tracking-wider ${t.title}" style="font-family: 'Noto Serif SC', serif;">***医生的智能体空间</h1>
           </div>
 
-          <!-- Value Props -->
-          <div class="p-6">
-            <div class="space-y-4 mt-2">
-              ${data.features.map(f => `
-                <div class="flex items-center p-4 bg-gray-50 rounded-2xl">
-                  <div class="w-12 h-12 ${data.colors.light} rounded-xl flex items-center justify-center text-xl mr-4 shadow-sm">
-                    ${f.icon}
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-gray-900">${f.title}</h3>
-                    <p class="text-xs text-gray-500 mt-1">${f.desc}</p>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Trust / Social Proof -->
-          <div class="px-6 py-4 bg-gray-50 mt-4 mx-4 rounded-2xl border border-gray-100">
-            <div class="text-center mb-4">
-              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest">已有 10,000+ 用户加入</h3>
-            </div>
-            <div class="flex justify-center -space-x-2">
-              <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=1">
-              <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=2">
-              <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=3">
-              <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=4">
-              <div class="w-8 h-8 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">+</div>
-            </div>
+          <div class="fade-in-up delay-500 mt-8 text-center">
+            <p class="text-lg font-medium tracking-widest leading-relaxed ${t.slogan}" style="font-family: 'Noto Sans SC', sans-serif;">
+              让健康触手可及<br/>做自我健康第一责任人
+            </p>
           </div>
         </div>
 
-        <!-- Sticky CTA -->
-        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-white via-white to-transparent pt-10">
-          <button class="w-full ${data.colors.primary} text-white font-bold py-4 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95">
-            ${data.cta}
-          </button>
+        <div class="absolute bottom-12 w-full flex flex-col items-center gap-2 fade-in-up delay-900">
+          <div class="flex items-center gap-4 text-sm font-medium tracking-widest ${t.sub}">
+            <span>生了病，不担心</span>
+            <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
+            <span>少生病，更健康</span>
+          </div>
         </div>
       `;
     }
 
-    // Initialize
-    setTheme('professional');
+    setTheme('minimal');
   </script>
-  <style>
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-    }
-  </style>
 </body>
 </html>
