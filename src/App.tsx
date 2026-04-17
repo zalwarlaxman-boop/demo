@@ -1,5 +1,7 @@
+import { useCallback, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
+import Splash from "./components/Splash";
 import PopSci from "./pages/PopSci";
 import Interact from "./pages/Interact";
 import Manage from "./pages/Manage";
@@ -14,8 +16,14 @@ import MePlaceholder from "./pages/MePlaceholder";
 import AdDietitian from "./pages/AdDietitian";
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const handleSkipSplash = useCallback(() => {
+    setShowSplash(false);
+  }, []);
+
   return (
     <Router>
+      <Splash open={showSplash} onSkip={handleSkipSplash} durationMs={2500} />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<PopSci />} />
