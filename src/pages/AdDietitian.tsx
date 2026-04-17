@@ -31,7 +31,7 @@ export default function AdDietitian() {
   return (
     <div className="flex flex-col h-full bg-white overflow-y-auto pb-safe relative">
       {/* Header */}
-      <header className="fixed top-0 w-full max-w-[480px] pt-10 pb-4 px-5 bg-white/80 backdrop-blur-md shrink-0 border-b border-[#e8e6dc]/60 z-50">
+      <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] pt-10 pb-4 px-5 bg-white/80 backdrop-blur-md shrink-0 border-b border-[#e8e6dc]/60 z-50">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -102,8 +102,8 @@ export default function AdDietitian() {
       </div>
 
       {/* Bottom CTA Action Bar */}
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-[#e8e6dc]/60 p-4 pb-safe flex items-center justify-center z-50">
-        <div className="max-w-[480px] w-full mx-auto flex items-center gap-4">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-[#e8e6dc]/60 p-4 pb-safe z-50">
+        <div className="w-full flex items-center gap-4">
           <div className="flex-1">
             <p className="text-[12px] text-[#b0aea5] font-serif mb-0.5">限时特惠</p>
             <p className="text-[20px] font-bold text-[#f43f5e] leading-none">¥ 99 <span className="text-[12px] text-[#b0aea5] line-through font-normal">¥ 399</span></p>
