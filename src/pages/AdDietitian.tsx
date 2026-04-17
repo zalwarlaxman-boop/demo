@@ -64,7 +64,7 @@ export default function AdDietitian() {
       </div>
 
       {/* Main Content */}
-      <div className="px-5 py-8 space-y-8 flex-1 pb-32">
+      <div className="px-5 py-8 space-y-8 flex-1 pb-48">
         {/* Why Choose Us */}
         <section>
           <h3 className="text-[18px] font-bold text-[#141413] mb-6 font-heading">服务特色</h3>
