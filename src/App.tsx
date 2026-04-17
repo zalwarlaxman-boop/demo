@@ -11,11 +11,13 @@ import ServiceDetail from "./pages/ServiceDetail";
 import NoticeDetail from "./pages/NoticeDetail";
 import MeSaved from "./pages/MeSaved";
 import MePlaceholder from "./pages/MePlaceholder";
+import Campaign from "./pages/Campaign";
 
 export default function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/campaign" element={<Campaign />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<PopSci />} />
           <Route path="popsci/article/:id" element={<PopSciDetail type="article" />} />
