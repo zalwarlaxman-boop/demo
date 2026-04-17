@@ -44,7 +44,7 @@ export default function Me() {
               <button
                 key={index}
                 type="button"
-                onClick={() => navigate("/campaign")}
+                onClick={() => navigate(item.path)}
                 className="w-full flex items-center justify-between p-4 outline-none focus-visible:bg-[#faf9f5] hover:bg-[#faf9f5]/50 transition-colors group border-b border-[#e8e6dc]/30 last:border-b-0 active:bg-[#faf9f5]"
               >
                 <div className="flex items-center gap-4">

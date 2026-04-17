@@ -103,7 +103,7 @@ export default function Manage() {
               <button
                 key={r.id}
                 type="button"
-                onClick={() => navigate("/campaign")}
+                onClick={() => navigate(`/notice/${r.id}`)}
                 className={
                   idx === 0
                     ? "w-full text-left bg-[#d97757]/5 border border-[#d97757]/20 rounded-2xl p-4 flex gap-4 outline-none focus-visible:ring-2 focus-visible:ring-[#d97757] hover:bg-[#d97757]/10 transition-colors"
@@ -145,7 +145,7 @@ export default function Manage() {
               <button
                 type="button"
                 key={n.id}
-                onClick={() => navigate("/campaign")}
+                onClick={() => navigate(`/notice/${n.id}`)}
                 className="w-full flex justify-between items-center group cursor-pointer text-left outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] rounded-sm py-0.5"
               >
                 <div className="flex items-center gap-3">

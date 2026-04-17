@@ -32,7 +32,7 @@ export default function PopSci() {
   const items = useMemo(() => listPopSci(type), [type]);
 
   const goDetail = (item: PopSciItem) => {
-    navigate("/campaign");
+    navigate(`/popsci/${item.type}/${item.id}`);
   };
 
   return (

@@ -5,6 +5,7 @@ import { serviceCatalog } from "@/data/serviceCatalog";
 
 export default function Service() {
   const navigate = useNavigate();
+  const joinUrl = "https://demo.hzmwmt.com/#dietitian";
   const services = [
     {
       title: "绿通招募",
@@ -63,13 +64,14 @@ export default function Service() {
               <p className="text-white/80 text-[14px] mb-6 leading-relaxed font-serif max-w-[85%]">
                 加入专业营养师群，获取个性化饮食指导、日常食谱打卡与答疑。
               </p>
-              <button
-                type="button"
-                onClick={() => navigate("/campaign")}
+              <a
+                href={joinUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="bg-white text-[#6a9bcc] px-6 py-2.5 rounded-full text-[14px] font-semibold inline-flex items-center gap-2 hover:bg-[#faf9f5] transition-colors shadow-sm active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#6a9bcc]"
               >
                 立即入群 <ArrowUpRight size={16} aria-hidden="true" />
-              </button>
+              </a>
             </div>
             
             {/* Decoration */}
@@ -89,7 +91,7 @@ export default function Service() {
                 <button
                   type="button"
                   key={idx}
-                  onClick={() => navigate("/campaign")}
+                  onClick={() => navigate(`/service/${item.slug}`)}
                   className="w-full text-left bg-white rounded-2xl p-4 shadow-sm active:scale-[0.98] transition-all cursor-pointer group border border-[#e8e6dc]/60 outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc] hover:shadow-md hover:border-[#e8e6dc]"
                 >
                   <div className={`${item.bg} w-11 h-11 rounded-[14px] flex items-center justify-center mb-3.5 group-hover:scale-110 transition-transform`}>
@@ -107,10 +109,11 @@ export default function Service() {
           <h2 className="text-[18px] font-semibold text-[#141413] mb-4 px-1 font-heading">快速入口</h2>
           <div className="space-y-3">
             {quickLinks.map((s) => (
-              <button
+              <a
                 key={s.slug}
-                type="button"
-                onClick={() => navigate("/campaign")}
+                href={s.ctaUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="w-full bg-white border border-[#e8e6dc] shadow-sm rounded-[16px] p-3 flex items-center justify-between hover:border-[#6a9bcc]/40 hover:bg-[#6a9bcc]/5 transition-colors group outline-none focus-visible:ring-2 focus-visible:ring-[#6a9bcc]"
               >
                 <div>
@@ -120,7 +123,7 @@ export default function Service() {
                 <div className="w-8 h-8 rounded-full bg-[#6a9bcc]/10 flex items-center justify-center group-hover:bg-[#6a9bcc]/20 transition-colors">
                   <ArrowUpRight size={16} className="text-[#6a9bcc]" aria-hidden="true" />
                 </div>
-              </button>
+              </a>
             ))}
           </div>
         </section>
