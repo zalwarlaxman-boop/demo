@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Stethoscope, MessageCircleHeart, Activity, LayoutGrid, User } from "lucide-react";
+import { Stethoscope, MessageCircleHeart, Activity, LayoutGrid, User, MessageCircleQuestion } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -13,6 +13,7 @@ const navItems = [
   { path: "/manage", label: "管理", icon: Activity },
   { path: "/service", label: "服务", icon: LayoutGrid },
   { path: "/me", label: "我的", icon: User },
+  { path: "/faq", label: "百问", icon: MessageCircleQuestion },
 ];
 
 export default function Layout() {

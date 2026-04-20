@@ -7,6 +7,7 @@ import Interact from "./pages/Interact";
 import Manage from "./pages/Manage";
 import Service from "./pages/Service";
 import Me from "./pages/Me";
+import Faq from "./pages/Faq";
 import ContentDetail from "./pages/ContentDetail";
 import PopSciDetail from "./pages/PopSciDetail";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -17,13 +18,13 @@ import AdDietitian from "./pages/AdDietitian";
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const handleSkipSplash = useCallback(() => {
+  const handleCloseSplash = useCallback(() => {
     setShowSplash(false);
   }, []);
 
   return (
     <Router>
-      <Splash open={showSplash} onSkip={handleSkipSplash} durationMs={2500} />
+      <Splash open={showSplash} onClose={handleCloseSplash} />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<PopSci />} />
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="service" element={<Service />} />
           <Route path="service/:slug" element={<ServiceDetail />} />
           <Route path="me" element={<Me />} />
+          <Route path="faq" element={<Faq />} />
           <Route path="me/saved" element={<MeSaved />} />
           <Route path="me/history" element={<MePlaceholder title="浏览历史" description="用于展示你近期浏览过的内容，后续可接入本地记录或服务端同步。" />} />
           <Route path="me/settings" element={<MePlaceholder title="个人设置" description="用于编辑个人资料、隐私与通知设置，后续可接入真实账号体系。" />} />
